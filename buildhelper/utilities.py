@@ -73,7 +73,6 @@ class Options:
 
 # Executes a shell command.  If ignore_results is True, then subprocess exceptions are caught and
 # ignored.  This is helpful when the command may return non-zero and succeed.  stdout is returned.
-# TODO: Share this code somehow with the pysteambridge runtime?
 # TODO: Better ignore_results behavior.  Still throw exceptions on certain errors?
 def execute(command, ignore_results = False):
   if not ignore_results:
