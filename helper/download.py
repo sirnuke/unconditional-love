@@ -21,7 +21,8 @@ def do(args, options):
     else:
       if not os.path.isfile(archive):
         print "Downloading '{}'...".format(library['name'])
-        execute("wget --directory-prefix={} {}".format(cache, library['source']))
+        execute("wget --directory-prefix={} {}".format(options.cache_directory(),
+          library['source']))
       else:
         print "'{}' already downloaded".format(library['name'])
       if not os.path.isdir(options.build_directory() + library['directory']):
