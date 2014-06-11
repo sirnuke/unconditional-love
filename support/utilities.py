@@ -37,8 +37,9 @@ class Options:
         },
       ]
     self._patches = 'patches/'
-    self._build = 'out/'
+    self._build = '.build/'
     self._cache = '.cache/'
+    self._output = 'out'
     self._options = {
         'arch' : '32',
         }
@@ -49,6 +50,8 @@ class Options:
       os.makedirs(self._cache)
     if not os.path.isdir(self._build):
       os.makedirs(self._build)
+    if not os.path.isdir(self._output):
+      os.makedirs(self._output)
 
   def build_directory(self):
     return self._build
@@ -58,6 +61,9 @@ class Options:
 
   def patches_directory(self):
     return self._patches
+
+  def output_directory(self):
+    return self._output
 
   # Attempt to load the options
   # Returns False on error (typically means source file isn't found)
