@@ -7,13 +7,15 @@
 import sys
 
 from helper.utilities import *
-from helper import config, download
+from helper import build, config, download
 
 def print_help():
   print "USAGE: build.py command [arguments]"
   print
   print "Where command is one of the following:"
   print "  configure    Configure for downloading and compilation"
+  print "  download     Download third party libraries and apply patches"
+  print "  build        Compile libraries"
   print
   exit(0)
 
@@ -32,6 +34,8 @@ if cmd == 'configure' or cmd == 'config':
 options.load()
 if cmd == 'download':
   download.do(args, options)
+elif cmd == 'build' or cmd == 'compile':
+  build.do(args, options)
 
 error('build.py', "Unknown command %s".format(sys.argv[1]))
 
