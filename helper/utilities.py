@@ -14,6 +14,7 @@ class Options:
           'source'    : 'http://luajit.org/download/LuaJIT-2.0.3.tar.gz',
           'archive'   : 'LuaJIT-2.0.3.tar.gz',
           'directory' : 'LuaJIT-2.0.3/',
+          'build'     : 'make ARCH={arch}',
           'patches'   : [ 'Makefile.patch' ],
         },
         {
@@ -22,6 +23,7 @@ class Options:
           'source'    : 'https://bitbucket.org/rude/love/downloads/love-0.9.1-linux-src.tar.gz',
           'archive'   : 'love-0.9.1-linux-src.tar.gz',
           'directory' : 'love-0.9.1/',
+          'build'     : 'true',
           'patches'   : [ ],
         },
         {
@@ -30,6 +32,7 @@ class Options:
           'source'    : 'http://libsdl.org/release/SDL2-2.0.3.tar.gz',
           'archive'   : 'SDL2-2.0.3.tar.gz',
           'directory' : 'SDL2-2.0.3/',
+          'build'     : 'true',
           'patches'   : [ ],
         },
       ]
@@ -88,6 +91,9 @@ class Options:
 
   def data(self):
     return self._data
+
+  def options(self):
+    return self._options
 
 # Executes a shell command.  If ignore_results is True, then subprocess exceptions are caught and
 # ignored.  This is helpful when the command may return non-zero and succeed.  stdout is returned.
