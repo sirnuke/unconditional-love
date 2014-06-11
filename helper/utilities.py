@@ -14,6 +14,7 @@ class Options:
           'source'    : 'http://luajit.org/download/LuaJIT-2.0.3.tar.gz',
           'archive'   : 'LuaJIT-2.0.3.tar.gz',
           'directory' : 'LuaJIT-2.0.3',
+          'patches'   : [ 'Makefile.patch' ],
         },
         {
           'name'      : 'Love2D',
@@ -21,6 +22,7 @@ class Options:
           'source'    : 'https://bitbucket.org/rude/love/downloads/love-0.9.1-linux-src.tar.gz',
           'archive'   : 'love-0.9.1-linux-src.tar.gz',
           'directory' : 'love-0.9.1',
+          'patches'   : [ ],
         },
         {
           'name'      : 'LibSDL',
@@ -28,6 +30,7 @@ class Options:
           'source'    : 'http://libsdl.org/release/SDL2-2.0.3.tar.gz',
           'archive'   : 'SDL2-2.0.3.tar.gz',
           'directory' : 'SDL2-2.0.3',
+          'patches'   : [ ],
         },
       ]
     self._build = 'out/'
