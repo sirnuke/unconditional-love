@@ -27,10 +27,14 @@ def do(args, options):
       if not os.path.isdir(options.build_directory() + library['directory']):
         print "Extracting '{}'...".format(library['name'])
         execute("tar -C {} -xf {}".format(options.build_directory(), archive))
+        print "Applying patches to '{}'...".format(library['name'])
+        for patch in library['patches']:
+          execute("patch -d {} -p 0 < {}".format(options.build_directory(),
+            options.patches_directory() + library['directory'] + patch))
       else:
         print "'{}' already extracted".format(library['name'])
+      print
 
-  print
   print 'Done'
   exit(0)
 
