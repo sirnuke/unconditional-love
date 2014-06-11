@@ -4,6 +4,7 @@
 # See LICENSE for licensing information
 
 import argparse
+from utilities import *
 
 def do(args, options):
   parser = argparse.ArgumentParser(prog='build.py config',
@@ -18,9 +19,6 @@ def do(args, options):
   options.save()
   print 'Saved configuration options'
   print 'TODO: Check for compiler and required tools here'
-
-  for library in options.data():
-    pass
 
   print ''
   print 'Configuration complete'
