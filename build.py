@@ -7,7 +7,7 @@
 import sys
 
 from buildhelper.utilities import *
-from buildhelper import config
+from buildhelper import config, download
 
 def print_help():
   print "USAGE: build.py command [arguments]"
@@ -30,5 +30,8 @@ if cmd == 'configure' or cmd == 'config':
   config.do(args, options)
 
 options.load()
+if cmd == 'download':
+  download.do(args, options)
+
 error('build.py', "Unknown command %s".format(sys.argv[1]))
 
