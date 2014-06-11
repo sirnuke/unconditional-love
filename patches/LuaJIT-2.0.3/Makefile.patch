@@ -1,0 +1,64 @@
+--- LuaJIT-2.0.3/src/Makefile	2014-03-12 08:10:00.000000000 -0400
++++ ../patches/LuaJIT-2.0.3/Makefile	2014-06-11 01:02:11.513489402 -0400
+@@ -24,8 +24,27 @@
+ # removing the '#' in front of them. Make sure you force a full recompile
+ # with "make clean", followed by "make" if you change any options.
+ #
++ifndef CC
++	CC := cc
++endif
++
++CCOPT=
++ifeq ($(ARCH),32)
++	CC += -m32
++else ifeq ($(ARCH),64)
++	CC += -m64
++else
++$(error ARCH must be set to 64 or 32)
++endif
++
++ifeq ($(DEBUG),'y')
++	CCDEBUG = -g
++else
++	CCDEBUG =
++endif
++
+ # LuaJIT builds as a native 32 or 64 bit binary by default.
+-CC= gcc
++#CC= gcc
+ #
+ # Use this if you want to force a 32 bit build on a 64 bit multilib OS.
+ #CC= gcc -m32
+@@ -48,14 +67,14 @@
+ # x86/x64 only: For GCC 4.2 or higher and if you don't intend to distribute
+ # the binaries to a different machine you could also use: -march=native
+ #
+-CCOPT_x86= -march=i686
++CCOPT_x86= -march=i686 -msse -msse2
+ CCOPT_x64=
+ CCOPT_arm=
+ CCOPT_ppc=
+ CCOPT_ppcspe=
+ CCOPT_mips=
+ #
+-CCDEBUG=
++#CCDEBUG=
+ # Uncomment the next line to generate debug information:
+ #CCDEBUG= -g
+ #
+@@ -94,13 +113,13 @@
+ # executable. But please consider that the FFI library is compiled-in,
+ # but NOT loaded by default. It only allocates any memory, if you actually
+ # make use of it.
+-#XCFLAGS+= -DLUAJIT_DISABLE_FFI
++XCFLAGS+= -DLUAJIT_DISABLE_FFI
+ #
+ # Features from Lua 5.2 that are unlikely to break existing code are
+ # enabled by default. Some other features that *might* break some existing
+ # code (e.g. __pairs or os.execute() return values) can be enabled here.
+ # Note: this does not provide full compatibility with Lua 5.2 at this time.
+-#XCFLAGS+= -DLUAJIT_ENABLE_LUA52COMPAT
++XCFLAGS+= -DLUAJIT_ENABLE_LUA52COMPAT
+ #
+ # Disable the JIT compiler, i.e. turn LuaJIT into a pure interpreter.
+ #XCFLAGS+= -DLUAJIT_DISABLE_JIT
