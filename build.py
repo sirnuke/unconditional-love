@@ -6,8 +6,8 @@
 
 import sys
 
-from helper.utilities import *
-from helper import build, config, download
+from support.utilities import *
+from support import build, config, download
 
 def print_help():
   print "USAGE: build.py command [arguments]"
