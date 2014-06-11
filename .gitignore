@@ -1,0 +1,4 @@
+.*.sw*
+.configuration.json
+*.pyc
+.cache
