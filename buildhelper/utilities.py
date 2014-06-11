@@ -3,9 +3,7 @@
 #
 # See LICENSE for licensing information
 
-import json
-import os
-import subprocess
+import json, os, subprocess
 
 class Options:
   def __init__(self):
@@ -32,11 +30,18 @@ class Options:
           'directory' : 'SDL2-2.0.3',
         },
       ]
+    self._cache = '.cache/'
     self._options = {
         'arch' : '32',
         }
     self._filename = '.configuration.json'
     self._version = [2014, 6, 10, 'dev']
+
+    if not os.path.exists(self._cache):
+      os.makedirs(self._cache)
+
+  def cache_directory(self):
+    return self._cache
 
   # Attempt to load the options
   # Returns False on error (typically means source file isn't found)
@@ -76,10 +81,10 @@ class Options:
 # TODO: Better ignore_results behavior.  Still throw exceptions on certain errors?
 def execute(command, ignore_results = False):
   if not ignore_results:
-    return subprocess.check_output(command, shell=True)
+    return subprocess.check_call(command, shell=True)
   else:
     try:
-      return subprocess.check_output(command, shell=True)
+      return subprocess.check_call(command, shell=True)
     except subprocess.CalledProcessError as e:
       return e.output
 
