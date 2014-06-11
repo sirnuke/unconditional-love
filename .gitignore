@@ -2,3 +2,6 @@
 .configuration.json
 *.pyc
 .cache
+LuaJIT-2.0.3/
+SDL2-2.0.3/
+love-0.9.1/
