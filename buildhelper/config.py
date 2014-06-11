@@ -22,7 +22,7 @@ def do(args, options):
   print 'Saved configuration options'
   print 'TODO: Check for compiler and required tools here'
 
-  print ''
+  print
   print 'Configuration complete'
   exit(0)
 
