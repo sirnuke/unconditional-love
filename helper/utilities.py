@@ -30,6 +30,7 @@ class Options:
           'directory' : 'SDL2-2.0.3',
         },
       ]
+    self._build = 'out/'
     self._cache = '.cache/'
     self._options = {
         'arch' : '32',
@@ -37,8 +38,13 @@ class Options:
     self._filename = '.configuration.json'
     self._version = [2014, 6, 10, 'dev']
 
-    if not os.path.exists(self._cache):
+    if not os.path.isdir(self._cache):
       os.makedirs(self._cache)
+    if not os.path.isdir(self._build):
+      os.makedirs(self._build)
+
+  def build_directory(self):
+    return self._build
 
   def cache_directory(self):
     return self._cache

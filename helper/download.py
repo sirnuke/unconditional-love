@@ -12,10 +12,8 @@ def do(args, options):
   parser.add_argument('--clean', action='store_true', help='removed cached archives')
   args = parser.parse_args(args)
 
-  cache = options.cache_directory()
-
   for library in options.data():
-    archive = cache + library['archive']
+    archive = options.cache_directory() + library['archive']
     if args.clean:
       if os.path.isfile(archive):
         print "Removing '{}'".format(archive)
@@ -26,9 +24,9 @@ def do(args, options):
         execute("wget --directory-prefix={} {}".format(cache, library['source']))
       else:
         print "'{}' already downloaded".format(library['name'])
-      if not os.path.isdir(library['directory']):
+      if not os.path.isdir(options.build_directory() + library['directory']):
         print "Extracting '{}'...".format(library['name'])
-        execute("tar -xf {}".format(archive))
+        execute("tar -C {} -xf {}".format(options.build_directory(), archive))
       else:
         print "'{}' already extracted".format(library['name'])
 
