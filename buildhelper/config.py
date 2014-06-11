@@ -14,6 +14,8 @@ def do(args, options):
   args = parser.parse_args(args)
 
   if args.arch:
+    if args.arch != '32' and args.arch != '64':
+      error('build.py config', "Invalid arch setting of '{}'".format(args.arch))
     options.set('arch', args.arch)
 
   options.save()
