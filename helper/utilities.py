@@ -13,7 +13,7 @@ class Options:
           'version'   : '2.0.3',
           'source'    : 'http://luajit.org/download/LuaJIT-2.0.3.tar.gz',
           'archive'   : 'LuaJIT-2.0.3.tar.gz',
-          'directory' : 'LuaJIT-2.0.3',
+          'directory' : 'LuaJIT-2.0.3/',
           'patches'   : [ 'Makefile.patch' ],
         },
         {
@@ -21,7 +21,7 @@ class Options:
           'version'   : '0.9.1',
           'source'    : 'https://bitbucket.org/rude/love/downloads/love-0.9.1-linux-src.tar.gz',
           'archive'   : 'love-0.9.1-linux-src.tar.gz',
-          'directory' : 'love-0.9.1',
+          'directory' : 'love-0.9.1/',
           'patches'   : [ ],
         },
         {
@@ -29,10 +29,11 @@ class Options:
           'version'   : '2.0.3',
           'source'    : 'http://libsdl.org/release/SDL2-2.0.3.tar.gz',
           'archive'   : 'SDL2-2.0.3.tar.gz',
-          'directory' : 'SDL2-2.0.3',
+          'directory' : 'SDL2-2.0.3/',
           'patches'   : [ ],
         },
       ]
+    self._patches = 'patches/'
     self._build = 'out/'
     self._cache = '.cache/'
     self._options = {
@@ -51,6 +52,9 @@ class Options:
 
   def cache_directory(self):
     return self._cache
+
+  def patches_directory(self):
+    return self._patches
 
   # Attempt to load the options
   # Returns False on error (typically means source file isn't found)
@@ -90,12 +94,12 @@ class Options:
 # TODO: Better ignore_results behavior.  Still throw exceptions on certain errors?
 def execute(command, ignore_results = False):
   if not ignore_results:
-    return subprocess.check_call(command, shell=True)
+    subprocess.check_call(command, shell=True)
   else:
     try:
-      return subprocess.check_call(command, shell=True)
+      subprocess.check_call(command, shell=True)
     except subprocess.CalledProcessError as e:
-      return e.output
+      pass
 
 def error(tag, message):
   print "Error! [{}]: {}".format(tag, message)
