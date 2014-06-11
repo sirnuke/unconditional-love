@@ -1,7 +1,7 @@
 # config.py - Generates configuration files
 # Copyright (c) 2014 Bryan DeGrendel
 #
-# See LICENSE
+# See LICENSE for licensing information
 
 import argparse
 

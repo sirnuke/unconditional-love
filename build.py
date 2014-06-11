@@ -2,7 +2,7 @@
 # build.py - Core build system interface
 # Copyright (c) 2014 Bryan DeGrendel
 #
-# See LICENSE
+# See LICENSE for licensing information
 
 import sys
 
