@@ -21,8 +21,8 @@ def do(args, options):
   options.save()
   print 'Saved configuration options'
   print 'TODO: Check for compiler and required tools here'
-
   print
-  print 'Configuration complete'
+
+  print 'Done'
   exit(0)
 
