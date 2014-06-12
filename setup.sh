@@ -6,10 +6,37 @@
 
 APPNAME="setup.sh"
 LIBRARY="all"
-ARCHITECTURE="32"
-REMOVE="both"
+PLATFORM="32"
+REMOVE="source"
 COMMANDS=""
 SETUP="download extract patch configure"
+
+print_help()
+{
+  echo "\
+Usage: $APPNAME [options] [command..]
+
+Options:
+ -h, --help                 Display this usage message
+ -l, --library <library>    Library to use; Love2D, LuaJIT, LibSDL,
+                            or all [$LIBRARY]
+ -p, --platform <platform>  Platform to target; 32 or 64 [$PLATFORM]
+ -r, --remove <type>        Components to remove during a clean; source,
+                            extract, or both [$REMOVE]
+Commands:
+[command..] specifies one or more actions to be executed, in order.
+
+* DOWNLOAD downloads library source archives, if not already cached
+* EXTRACT extracts the library source code, if not already extracted
+* PATCH applies any local patches, and will print errors if already
+  patched
+* CONFIGURE runs any library configuration scripts; platform setting is
+  only useful for this command
+* SETUP is equivalent to 'download extract patch configure' (default)
+* CLEAN removes source archives, or extracted source, or both; remove
+  setting is only valid for this command"
+  exit 0
+}
 
 getopt -T
 if [ $? -ne 4 ] ; then
@@ -26,8 +53,7 @@ eval set -- "$options"
 while [[ $# > 0 ]] ; do
   case $1 in
     -h|--help)
-      echo "$APPNAME: Help goes here!"
-      exit 0
+      print_help
       ;;
     -l|--library)
       LIBRARY="$2"
