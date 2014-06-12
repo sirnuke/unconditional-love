@@ -11,6 +11,34 @@ REMOVE="source"
 COMMANDS=""
 SETUP="download extract patch configure"
 
+set_luajit()
+{
+  LIB_NAME="LuaJIT"
+  LIB_VERSION="2.0.3"
+  LIB_DOWNLOAD="http://luajit.org/download/LuaJIT-2.0.3.tar.gz"
+  LIB_ARCHIVE="LuaJIT-2.0.3.tar.gz"
+  LIB_DIRECTORY="LuaJIT-2.0.3/"
+}
+
+set_libsdl()
+{
+  LIB_NAME="LibSDL"
+  LIB_VERSION="2.0.3"
+  LIB_SOURCE="http://libsdl.org/release/SDL2-2.0.3.tar.gz"
+  LIB_ARCHIVE="SDL2-2.0.3.tar.gz"
+  LIB_DIRECTORY="SDL2-2.0.3/"
+}
+
+set_love2d()
+{
+  LIB_NAME="Love2D"
+  LIB_VERSION="0.9.1"
+  LIB_SOURCE="https://bitbucket.org/rude/love/downloads/love-0.9.1-linux-src.tar.gz"
+  LIB_ARCHIVE="love-0.9.1-linux-src.tar.gz"
+  LIB_DIRECTORY="love-0.9.1/"
+}
+
+
 print_help()
 {
   echo "\
@@ -98,23 +126,37 @@ if [ -z "$COMMANDS" ] ; then
   COMMANDS="$SETUP"
 fi
 
-for cmd in $COMMANDS ; do
-  case $cmd in
-    download)
-      ;;
-    extract)
-      ;;
-    patch)
-      ;;
-    configure)
-      ;;
-    clean)
-      ;;
-    setup)
-      ;;
+if [ "$LIBRARY" == "all" ]; then
+  LIBRARY="luajit love2d libsdl"
+fi
+
+for lib in $LIBRARY ; do
+  case ${lib,,} in
+    luajit) set_luajit ;;
+    libsdl) set_libsdl ;;
+    love2d) set_love2d ;;
     *)
-      echo "$APPNAME: Internal error: Unhandled command $cmd"
-      exit 2
+      echo "$APPNAME: Unknown library $lib"
+      exit 1
   esac
+  for cmd in $COMMANDS ; do
+    case $cmd in
+      download)
+        ;;
+      extract)
+        ;;
+      patch)
+        ;;
+      configure)
+        ;;
+      clean)
+        ;;
+      setup)
+        ;;
+      *)
+        echo "$APPNAME: Internal error: Unhandled command $cmd"
+        exit 2
+    esac
+  done
 done
 
