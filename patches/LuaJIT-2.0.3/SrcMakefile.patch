@@ -1,5 +1,5 @@
 --- LuaJIT-2.0.3/src/Makefile	2014-03-12 08:10:00.000000000 -0400
-+++ ../patches/LuaJIT-2.0.3/Makefile	2014-06-11 01:02:11.513489402 -0400
++++ ../dev/LuaJIT-2.0.3/src/Makefile	2014-06-12 19:19:20.767283535 -0400
 @@ -24,8 +24,27 @@
  # removing the '#' in front of them. Make sure you force a full recompile
  # with "make clean", followed by "make" if you change any options.
