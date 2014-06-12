@@ -160,6 +160,12 @@ for lib in $LIBRARY ; do
         popd > /dev/null
         ;;
       extract)
+        if [ ! -f "$EXTRACT_DIR/$LIB_DIRECTORY" ] ; then
+          echo "Extracting $LIB_NAME..."
+          tar -C $EXTRACT_DIR -zxf $CACHE_DIR/$LIB_ARCHIVE
+        else
+          echo "$LIB_NAME already extracted (remove with CLEAN command)"
+        fi
         ;;
       patch)
         ;;
