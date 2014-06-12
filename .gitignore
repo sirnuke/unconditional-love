@@ -1,5 +1,4 @@
 .*.sw*
-.configuration.json
-*.pyc
-.cache
+cache
+build
 out
