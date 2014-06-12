@@ -4,13 +4,17 @@
 #
 # See LICENSE for licensing information
 
+shopt -s nullglob
+
 APPNAME="setup.sh"
 LIBRARY="all"
 PLATFORM="32"
 REMOVE="source"
 COMMANDS=""
 SETUP="download extract patch configure"
+MAGIC="#UNCONDITIONAL#LOVE# Edit this default setting with ./setup.sh configure"
 
+PATCHES_DIR=patches
 CACHE_DIR=cache
 EXTRACT_DIR=build
 OUT_DIR=out
@@ -160,7 +164,7 @@ for lib in $LIBRARY ; do
         popd > /dev/null
         ;;
       extract)
-        if [ ! -f "$EXTRACT_DIR/$LIB_DIRECTORY" ] ; then
+        if [ ! -d "$EXTRACT_DIR/$LIB_DIRECTORY" ] ; then
           echo "Extracting $LIB_NAME..."
           tar -C $EXTRACT_DIR -zxf $CACHE_DIR/$LIB_ARCHIVE
         else
@@ -168,6 +172,10 @@ for lib in $LIBRARY ; do
         fi
         ;;
       patch)
+        echo "Patching $LIB_NAME..."
+        for patch in $PATCHES_DIR/$LIB_DIRECTORY/*.patch ; do
+          patch -p 0 -t -u -r - --forward -d $EXTRACT_DIR < $patch
+        done
         ;;
       configure)
         ;;
@@ -180,5 +188,6 @@ for lib in $LIBRARY ; do
         exit 2
     esac
   done
+  echo
 done
 
