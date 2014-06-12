@@ -99,6 +99,22 @@ if [ -z "$COMMANDS" ] ; then
 fi
 
 for cmd in $COMMANDS ; do
-  echo $cmd
+  case $cmd in
+    download)
+      ;;
+    extract)
+      ;;
+    patch)
+      ;;
+    configure)
+      ;;
+    clean)
+      ;;
+    setup)
+      ;;
+    *)
+      echo "$APPNAME: Internal error: Unhandled command $cmd"
+      exit 2
+  esac
 done
 
