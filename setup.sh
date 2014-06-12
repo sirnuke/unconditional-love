@@ -11,6 +11,14 @@ REMOVE="source"
 COMMANDS=""
 SETUP="download extract patch configure"
 
+CACHE_DIR=cache
+EXTRACT_DIR=build
+OUT_DIR=out
+
+if [ ! -d $CACHE_DIR ] ; then mkdir $CACHE_DIR ; fi
+if [ ! -d $EXTRACT_DIR ] ; then mkdir $EXTRACT_DIR ; fi
+if [ ! -d $OUT_DIR ] ; then mkdir $OUT_DIR ; fi
+
 set_luajit()
 {
   LIB_NAME="LuaJIT"
@@ -24,7 +32,7 @@ set_libsdl()
 {
   LIB_NAME="LibSDL"
   LIB_VERSION="2.0.3"
-  LIB_SOURCE="http://libsdl.org/release/SDL2-2.0.3.tar.gz"
+  LIB_DOWNLOAD="http://libsdl.org/release/SDL2-2.0.3.tar.gz"
   LIB_ARCHIVE="SDL2-2.0.3.tar.gz"
   LIB_DIRECTORY="SDL2-2.0.3/"
 }
@@ -33,7 +41,7 @@ set_love2d()
 {
   LIB_NAME="Love2D"
   LIB_VERSION="0.9.1"
-  LIB_SOURCE="https://bitbucket.org/rude/love/downloads/love-0.9.1-linux-src.tar.gz"
+  LIB_DOWNLOAD="https://bitbucket.org/rude/love/downloads/love-0.9.1-linux-src.tar.gz"
   LIB_ARCHIVE="love-0.9.1-linux-src.tar.gz"
   LIB_DIRECTORY="love-0.9.1/"
 }
@@ -142,6 +150,14 @@ for lib in $LIBRARY ; do
   for cmd in $COMMANDS ; do
     case $cmd in
       download)
+        pushd $CACHE_DIR > /dev/null
+        if [ ! -f "$LIB_ARCHIVE" ] ; then
+          echo "Downloading $LIB_NAME..."
+          wget $LIB_DOWNLOAD
+        else
+          echo "$LIB_NAME already downloaded (remove with CLEAN command)"
+        fi
+        popd > /dev/null
         ;;
       extract)
         ;;
