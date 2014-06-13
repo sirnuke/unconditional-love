@@ -12,7 +12,7 @@ PLATFORM="32"
 REMOVE="source"
 COMMANDS=""
 SETUP="download extract patch configure"
-MAGIC="#UNCONDITIONAL#LOVE# Edit this default setting with ./setup.sh configure"
+MAGIC="#UNCONDITIONAL#LOVE#"
 
 PATCHES_DIR=patches
 CACHE_DIR=cache
@@ -23,31 +23,40 @@ if [ ! -d $CACHE_DIR ] ; then mkdir $CACHE_DIR ; fi
 if [ ! -d $EXTRACT_DIR ] ; then mkdir $EXTRACT_DIR ; fi
 if [ ! -d $OUT_DIR ] ; then mkdir $OUT_DIR ; fi
 
-set_luajit()
+luajit_set()
 {
   LIB_NAME="LuaJIT"
   LIB_VERSION="2.0.3"
   LIB_DOWNLOAD="http://luajit.org/download/LuaJIT-2.0.3.tar.gz"
   LIB_ARCHIVE="LuaJIT-2.0.3.tar.gz"
   LIB_DIRECTORY="LuaJIT-2.0.3/"
+  LIB_CONFIGURE="luajit_configure"
 }
 
-set_libsdl()
+luajit_configure()
+{
+  sed -i 's:^ARCH.*'$MAGIC'.*$:ARCH?='$PLATFORM' '$MAGIC':' Makefile
+  sed -i 's:^export PREFIX.*'$MAGIC'.*$:export PREFIX=../../'$OUT_DIR' '$MAGIC':' Makefile
+}
+
+libsdl_set()
 {
   LIB_NAME="LibSDL"
   LIB_VERSION="2.0.3"
   LIB_DOWNLOAD="http://libsdl.org/release/SDL2-2.0.3.tar.gz"
   LIB_ARCHIVE="SDL2-2.0.3.tar.gz"
   LIB_DIRECTORY="SDL2-2.0.3/"
+  LIB_CONFIGURE="true"
 }
 
-set_love2d()
+love2d_set()
 {
   LIB_NAME="Love2D"
   LIB_VERSION="0.9.1"
   LIB_DOWNLOAD="https://bitbucket.org/rude/love/downloads/love-0.9.1-linux-src.tar.gz"
   LIB_ARCHIVE="love-0.9.1-linux-src.tar.gz"
   LIB_DIRECTORY="love-0.9.1/"
+  LIB_CONFIGURE="true"
 }
 
 
@@ -84,7 +93,7 @@ if [ $? -ne 4 ] ; then
   exit 1
 fi
 
-if ! options=$(getopt --options hl:a:r: --long help,library:,architecture:,remove: --name $APPNAME -- "$@") ; then
+if ! options=$(getopt --options hl:p:r: --long help,library:,platform:,remove: --name $APPNAME -- "$@") ; then
   exit 1
 fi
 
@@ -99,12 +108,12 @@ while [[ $# > 0 ]] ; do
       LIBRARY="$2"
       shift
       ;;
-    -a|--architecture)
-      ARCHITECTURE="$1"
+    -p|--platform)
+      PLATFORM="$2"
       shift
       ;;
     -r|--remove)
-      REMOVE="$1"
+      REMOVE="$2"
       shift
       ;;
     --)
@@ -144,9 +153,9 @@ fi
 
 for lib in $LIBRARY ; do
   case ${lib,,} in
-    luajit) set_luajit ;;
-    libsdl) set_libsdl ;;
-    love2d) set_love2d ;;
+    luajit) luajit_set ;;
+    libsdl) libsdl_set ;;
+    love2d) love2d_set ;;
     *)
       echo "$APPNAME: Unknown library $lib"
       exit 1
@@ -178,6 +187,10 @@ for lib in $LIBRARY ; do
         done
         ;;
       configure)
+        echo "Configuring $LIB_NAME..."
+        pushd $EXTRACT_DIR/$LIB_DIRECTORY > /dev/null
+        $LIB_CONFIGURE
+        popd > /dev/null
         ;;
       clean)
         ;;
