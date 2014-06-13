@@ -9,7 +9,7 @@ shopt -s nullglob
 APPNAME="setup.sh"
 LIBRARY="all"
 PLATFORM="32"
-REMOVE="source"
+REMOVE="build"
 COMMANDS=""
 SETUP="download extract patch configure"
 MAGIC="#UNCONDITIONAL#LOVE#"
@@ -70,8 +70,8 @@ Options:
  -l, --library <library>    Library to use; Love2D, LuaJIT, LibSDL,
                             or all [$LIBRARY]
  -p, --platform <platform>  Platform to target; 32 or 64 [$PLATFORM]
- -r, --remove <type>        Components to remove during a clean; source,
-                            extract, or both [$REMOVE]
+ -r, --remove <type>        Components to remove during a clean; archive,
+                            build, or both [$REMOVE]
 Commands:
 [command..] specifies one or more actions to be executed, in order.
 
@@ -127,6 +127,24 @@ while [[ $# > 0 ]] ; do
   esac
   shift
 done
+
+case ${REMOVE,,} in
+  both)
+    REMOVE="build archive"
+    ;;
+  build)
+    REMOVE="build"
+    ;;
+  archive)
+    REMOVE="archive"
+    ;;
+  *)
+    echo "$APPNAME: Invalid clean type '$REMOVE'"
+    exit 1
+    ;;
+esac
+
+
 
 while [[ $# > 0 ]] ; do
   case ${1,,} in
@@ -193,6 +211,25 @@ for lib in $LIBRARY ; do
         popd > /dev/null
         ;;
       clean)
+        echo "Removing $LIB_NAME ($REMOVE)..."
+        for remove in $REMOVE ; do
+          case $remove in
+            build)
+              pushd $EXTRACT_DIR > /dev/null
+              rm -r $LIB_DIRECTORY
+              popd > /dev/null
+              ;;
+            archive)
+              pushd $CACHE_DIR > /dev/null
+              rm $LIB_ARCHIVE
+              popd > /dev/null
+              ;;
+            *)
+              echo "$APPNAME: Unhandled remove type $remove"
+              exit 2
+              ;;
+          esac
+        done
         ;;
       *)
         echo "$APPNAME: Internal error: Unhandled command $cmd"
