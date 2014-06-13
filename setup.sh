@@ -12,7 +12,6 @@ PLATFORM="32"
 REMOVE="build"
 COMMANDS=""
 SETUP="download extract patch configure"
-MAGIC="#UNCONDITIONAL#LOVE#"
 
 PATCHES_DIR=patches
 CACHE_DIR=.cache
@@ -22,6 +21,8 @@ OUT_DIR=out
 if [ ! -d $CACHE_DIR ] ; then mkdir $CACHE_DIR ; fi
 if [ ! -d $EXTRACT_DIR ] ; then mkdir $EXTRACT_DIR ; fi
 if [ ! -d $OUT_DIR ] ; then mkdir $OUT_DIR ; fi
+
+OUT_DIR_ABSOLUTE=`readlink -f $OUT_DIR`
 
 luajit_set()
 {
@@ -35,8 +36,8 @@ luajit_set()
 
 luajit_configure()
 {
-  sed -i 's:^ARCH.*'$MAGIC'.*$:ARCH?='$PLATFORM' '$MAGIC':' Makefile
-  sed -i 's:^export PREFIX.*'$MAGIC'.*$:export PREFIX=../../'$OUT_DIR' '$MAGIC':' Makefile
+  sed -i 's:^ARCH?=.*$:ARCH?='$PLATFORM':' Makefile
+  sed -i 's:^export PREFIX=.*$:export PREFIX= '$OUT_DIR_ABSOLUTE':' Makefile
 }
 
 libsdl_set()

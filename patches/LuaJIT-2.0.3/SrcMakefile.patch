@@ -1,13 +1,14 @@
 --- LuaJIT-2.0.3/src/Makefile	2014-03-12 08:10:00.000000000 -0400
-+++ ../dev/LuaJIT-2.0.3/src/Makefile	2014-06-12 19:19:20.767283535 -0400
-@@ -24,8 +24,27 @@
++++ ../dev/LuaJIT-2.0.3/src/Makefile	2014-06-12 23:05:42.319274833 -0400
+@@ -24,8 +24,28 @@
  # removing the '#' in front of them. Make sure you force a full recompile
  # with "make clean", followed by "make" if you change any options.
  #
-+ifndef CC
-+	CC := cc
-+endif
 +
++#UNCONDITIONAL#LOVE# reminds you to not modify 'ARCH?=' here, but to use
++# './setup.sh configure --platform XX' instead.
++ARCH?=32
++CC?=cc
 +CCOPT=
 +ifeq ($(ARCH),32)
 +	CC += -m32
@@ -29,7 +30,7 @@
  #
  # Use this if you want to force a 32 bit build on a 64 bit multilib OS.
  #CC= gcc -m32
-@@ -48,14 +67,14 @@
+@@ -48,14 +68,14 @@
  # x86/x64 only: For GCC 4.2 or higher and if you don't intend to distribute
  # the binaries to a different machine you could also use: -march=native
  #
@@ -46,7 +47,7 @@
  # Uncomment the next line to generate debug information:
  #CCDEBUG= -g
  #
-@@ -94,13 +113,13 @@
+@@ -94,13 +114,13 @@
  # executable. But please consider that the FFI library is compiled-in,
  # but NOT loaded by default. It only allocates any memory, if you actually
  # make use of it.
