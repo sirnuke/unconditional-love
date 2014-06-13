@@ -47,7 +47,29 @@ libsdl_set()
   LIB_DOWNLOAD="http://libsdl.org/release/SDL2-2.0.3.tar.gz"
   LIB_ARCHIVE="SDL2-2.0.3.tar.gz"
   LIB_DIRECTORY="SDL2-2.0.3/"
-  LIB_CONFIGURE="true"
+  LIB_CONFIGURE="libsdl_configure"
+}
+
+libsdl_configure()
+{
+  export CFLAGS="-m$PLATFORM"
+  export LDFLAGS="-m$PLATFORM"
+  ./configure --enable-shared --enable-static --enable-audio --enable-video --enable-render \
+    --enable-events --enable-joystick --enable-haptic --enable-power --enable-filesystem \
+    --enable-threads --enable-timers --enable-file --enable-loadso --enable-cpuinfo \
+    --enable-assembly --enable-ssemath --enable-mmx --enable-3dnow --enable-sse --enable-sse2 \
+    --enable-altivec --enable-oss --enable-alsa --enable-alsa-shared --disable-esd \
+    --enable-pulseaudio --enable-pulseaudio-shared --enable-arts --enable-arts-shared --enable-nas \
+    --enable-nas-shared --disable-sndio --disable-sndio-shared --enable-diskaudio --enable-dummyaudio \
+    --enable-video-wayland --enable-video-wayland-qt-touch --enable-wayland-shared \
+    --disable-video-mir --disable-mir-shared --enable-video-x11 --enable-x11-shared \
+    --enable-video-x11-xcursor --enable-video-x11-xinerama --enable-video-x11-xinput \
+    --enable-video-x11-xrandr --enable-video-x11-scrnsaver --enable-video-x11-xshape \
+    --enable-video-x11-vm --disable-video-cocoa --disable-video-directfb --disable-directfb-shared \
+    --disable-fusionsound --disable-fusionsound-shared --enable-video-dummy --enable-video-opengl \
+    --enable-video-opengles --enable-libudev --enable-dbus --enable-input-tslib --enable-pthreads \
+    --enable-pthread-sem --disable-directx --enable-sdl-dlopen --enable-clock_gettime \
+    --enable-rpath --disable-render-d3d --prefix=$OUT_DIR_ABSOLUTE
 }
 
 love2d_set()
