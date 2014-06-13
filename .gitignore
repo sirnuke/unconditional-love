@@ -1,5 +1,5 @@
 .*.sw*
-cache
+.cache
 build
 out
 dev

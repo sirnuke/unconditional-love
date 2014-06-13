@@ -15,7 +15,7 @@ SETUP="download extract patch configure"
 MAGIC="#UNCONDITIONAL#LOVE#"
 
 PATCHES_DIR=patches
-CACHE_DIR=cache
+CACHE_DIR=.cache
 EXTRACT_DIR=build
 OUT_DIR=out
 
