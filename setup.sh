@@ -194,8 +194,6 @@ for lib in $LIBRARY ; do
         ;;
       clean)
         ;;
-      setup)
-        ;;
       *)
         echo "$APPNAME: Internal error: Unhandled command $cmd"
         exit 2
