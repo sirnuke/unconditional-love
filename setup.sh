@@ -11,7 +11,7 @@ LIBRARY="all"
 PLATFORM="32"
 REMOVE="build"
 COMMANDS=""
-SETUP="download extract patch configure"
+SETUP="download extract patch configure build"
 
 PATCHES_DIR=patches
 CACHE_DIR=.cache
@@ -32,12 +32,19 @@ luajit_set()
   LIB_ARCHIVE="LuaJIT-2.0.3.tar.gz"
   LIB_DIRECTORY="LuaJIT-2.0.3/"
   LIB_CONFIGURE="luajit_configure"
+  LIB_BUILD="luajit_build"
 }
 
 luajit_configure()
 {
   sed -i 's:^ARCH?=.*$:ARCH?='$PLATFORM':' Makefile
   sed -i 's:^export PREFIX=.*$:export PREFIX= '$OUT_DIR_ABSOLUTE':' Makefile
+}
+
+luajit_build()
+{
+  make
+  make install
 }
 
 libsdl_set()
@@ -48,6 +55,7 @@ libsdl_set()
   LIB_ARCHIVE="SDL2-2.0.3.tar.gz"
   LIB_DIRECTORY="SDL2-2.0.3/"
   LIB_CONFIGURE="libsdl_configure"
+  LIB_BUILD="libsdl_build"
 }
 
 libsdl_configure()
@@ -72,6 +80,12 @@ libsdl_configure()
     --enable-rpath --disable-render-d3d --prefix=$OUT_DIR_ABSOLUTE
 }
 
+libsdl_build()
+{
+  make
+  make install
+}
+
 love2d_set()
 {
   LIB_NAME="Love2D"
@@ -79,9 +93,20 @@ love2d_set()
   LIB_DOWNLOAD="https://bitbucket.org/rude/love/downloads/love-0.9.1-linux-src.tar.gz"
   LIB_ARCHIVE="love-0.9.1-linux-src.tar.gz"
   LIB_DIRECTORY="love-0.9.1/"
-  LIB_CONFIGURE="true"
+  LIB_CONFIGURE="love2d_configure"
+  LIB_BUILD="love2d_build"
 }
 
+
+love2d_configure()
+{
+  true
+}
+
+love2d_build()
+{
+  true
+}
 
 print_help()
 {
@@ -104,7 +129,9 @@ Commands:
   patched
 * CONFIGURE runs any library configuration scripts; platform setting is
   only useful for this command
-* SETUP is equivalent to 'download extract patch configure' (default)
+* BUILD compiles and installs libraries to the internal prefix
+* SETUP is equivalent to 'download extract patch configure 
+  build' (default)
 * CLEAN removes source archives, or extracted source, or both; remove
   setting is only valid for this command"
   exit 0
@@ -174,8 +201,9 @@ while [[ $# > 0 ]] ; do
     download) COMMANDS="$COMMANDS download" ;;
     extract) COMMANDS="$COMMANDS extract" ;;
     patch) COMMANDS="$COMMANDS patch" ;;
-    configure) COMMANDS="$COMMANDS configure" ;;
+    configure|config) COMMANDS="$COMMANDS configure" ;;
     clean) COMMANDS="$COMMANDS clean" ;;
+    build|compile) COMMANDS="$COMMANDS build" ;;
     setup) COMMANDS="$COMMANDS $SETUP" ;;
     *)
       echo "$APPNAME: Unknown command $1"
@@ -189,7 +217,7 @@ if [ -z "$COMMANDS" ] ; then
 fi
 
 if [ "$LIBRARY" == "all" ]; then
-  LIBRARY="luajit love2d libsdl"
+  LIBRARY="luajit libsdl love2d"
 fi
 
 for lib in $LIBRARY ; do
@@ -231,6 +259,12 @@ for lib in $LIBRARY ; do
         echo "Configuring $LIB_NAME..."
         pushd $EXTRACT_DIR/$LIB_DIRECTORY > /dev/null
         $LIB_CONFIGURE
+        popd > /dev/null
+        ;;
+      build)
+        echo "Building $LIB_NAME..."
+        pushd $EXTRACT_DIR/$LIB_DIRECTORY > /dev/null
+        $LIB_BUILD
         popd > /dev/null
         ;;
       clean)
