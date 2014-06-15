@@ -63,7 +63,7 @@ libsdl_configure()
 {
   export CFLAGS="-m$PLATFORM"
   export LDFLAGS="-m$PLATFORM"
-  ./configure --enable-shared --disable-static --enable-audio --enable-video --enable-render \
+  ./configure --enable-shared --enable-static --enable-audio --enable-video --enable-render \
     --enable-events --enable-joystick --enable-haptic --enable-power --enable-filesystem \
     --enable-threads --enable-timers --enable-file --enable-loadso --enable-cpuinfo \
     --enable-assembly --enable-ssemath --enable-mmx --enable-3dnow --enable-sse --enable-sse2 \
