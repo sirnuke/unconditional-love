@@ -100,12 +100,15 @@ openal_set()
 
 openal_configure()
 {
-  true
+  export CFLAGS="-m$PLATFORM"
+  export LDFLAGS="-m$PLATFORM"
+  cmake -DCMAKE_INSTALL_PREFIX=$OUT_DIR_ABSOLUTE -DUTILS=OFF -DEXAMPLES=OFF
 }
 
 openal_build()
 {
-  true
+  make
+  make install
 }
 
 love2d_set()
