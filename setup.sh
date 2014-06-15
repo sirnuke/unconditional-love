@@ -12,10 +12,11 @@ PLATFORM="32"
 REMOVE="build"
 COMMANDS=""
 SETUP="download extract patch configure build"
+LIBRARIES="luajit libsdl openal love2d"
 
 PATCHES_DIR=patches
 CACHE_DIR=.cache
-EXTRACT_DIR=build
+EXTRACT_DIR=.build
 OUT_DIR=out
 
 if [ ! -d $CACHE_DIR ] ; then mkdir $CACHE_DIR ; fi
@@ -62,7 +63,7 @@ libsdl_configure()
 {
   export CFLAGS="-m$PLATFORM"
   export LDFLAGS="-m$PLATFORM"
-  ./configure --enable-shared --enable-static --enable-audio --enable-video --enable-render \
+  ./configure --enable-shared --disable-static --enable-audio --enable-video --enable-render \
     --enable-events --enable-joystick --enable-haptic --enable-power --enable-filesystem \
     --enable-threads --enable-timers --enable-file --enable-loadso --enable-cpuinfo \
     --enable-assembly --enable-ssemath --enable-mmx --enable-3dnow --enable-sse --enable-sse2 \
@@ -84,6 +85,27 @@ libsdl_build()
 {
   make
   make install
+}
+
+openal_set()
+{
+  LIB_NAME="OpenAL"
+  LIB_VERSION="1.15.1"
+  LIB_DOWNLOAD="http://kcat.strangesoft.net/openal-releases/openal-soft-1.15.1.tar.bz2"
+  LIB_ARCHIVE="openal-soft-1.15.1.tar.bz2"
+  LIB_DIRECTORY="openal-soft-1.15.1/"
+  LIB_CONFIGURE="openal_configure"
+  LIB_BUILD="openal_build"
+}
+
+openal_configure()
+{
+  true
+}
+
+openal_build()
+{
+  true
 }
 
 love2d_set()
@@ -120,7 +142,7 @@ Usage: $APPNAME [options] [command..]
 Options:
  -h, --help                 Display this usage message
  -l, --library <library>    Library to use; Love2D, LuaJIT, LibSDL,
-                            or all [$LIBRARY]
+                            OpenAL, or all [$LIBRARY]
  -p, --platform <platform>  Platform to target; 32 or 64 [$PLATFORM]
  -r, --remove <type>        Components to remove during a clean; archive,
                             build, or both [$REMOVE]
@@ -221,7 +243,7 @@ if [ -z "$COMMANDS" ] ; then
 fi
 
 if [ "$LIBRARY" == "all" ]; then
-  LIBRARY="luajit libsdl love2d"
+  LIBRARY="$LIBRARIES"
 fi
 
 for lib in $LIBRARY ; do
@@ -229,6 +251,7 @@ for lib in $LIBRARY ; do
     luajit) luajit_set ;;
     libsdl) libsdl_set ;;
     love2d) love2d_set ;;
+    openal) openal_set ;;
     *)
       echo "$APPNAME: Unknown library $lib"
       exit 1
@@ -248,7 +271,7 @@ for lib in $LIBRARY ; do
       extract)
         if [ ! -d "$EXTRACT_DIR/$LIB_DIRECTORY" ] ; then
           echo "Extracting $LIB_NAME..."
-          tar -C $EXTRACT_DIR -zxf $CACHE_DIR/$LIB_ARCHIVE
+          tar -C $EXTRACT_DIR -xf $CACHE_DIR/$LIB_ARCHIVE
         else
           echo "$LIB_NAME already extracted (remove with CLEAN command)"
         fi
