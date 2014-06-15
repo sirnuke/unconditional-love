@@ -100,7 +100,11 @@ love2d_set()
 
 love2d_configure()
 {
-  true
+  export CFLAGS="-m$PLATFORM"
+  export LDFLAGS="-m$PLATFORM"
+  export PKG_CONFIG_PATH="$OUT_DIR_ABSOLUTE/lib"
+  ./configure --enable-shared --enable-static --disable-osx --enable-gme --with-lua=luajit \
+    --prefix=$OUT_DIR_ABSOLUTE
 }
 
 love2d_build()
