@@ -171,7 +171,7 @@ modplug_configure()
   export CXXFLAGS="-m$PLATFORM"
   export LDFLAGS="-m$PLATFORM"
   export PKG_CONFIG_PATH="$OUT_DIR_ABSOLUTE/lib/pkgconfig"
-  ./configure --disable-static --enable-shared --prefix=$OUT_DIR_ABSOLUTE 
+  ./configure --disable-static --enable-shared --prefix=$OUT_DIR_ABSOLUTE
 }
 
 modplug_build()
