@@ -12,7 +12,7 @@ PLATFORM="32"
 REMOVE="build"
 COMMANDS=""
 SETUP="download extract patch configure build"
-LIBRARIES="luajit libsdl openal love2d"
+LIBRARIES="luajit libsdl openal devil modplug love2d"
 
 PATCHES_DIR=patches
 CACHE_DIR=.cache
@@ -111,6 +111,75 @@ openal_build()
   make install
 }
 
+devil_set()
+{
+  LIB_NAME="DevIL"
+  LIB_VERSION="1.7.8"
+  LIB_DOWNLOAD="http://downloads.sourceforge.net/openil/DevIL-1.7.8.tar.gz"
+  LIB_ARCHIVE="DevIL-1.7.8.tar.gz"
+  LIB_DIRECTORY="devil-1.7.8/"
+  LIB_CONFIGURE="devil_configure"
+  LIB_BUILD="devil_build"
+}
+
+devil_configure()
+{
+  export CFLAGS=""
+  export LDFLAGS=""
+  export PKG_CONFIG_PATH="$OUT_DIR_ABSOLUTE/lib/pkgconfig"
+  case $PLATFORM in
+    32) local platform="--enable-x86 --disable-x86_64" ;;
+    64) local platform="--disable-x86 --enable-x86_64" ;;
+    *)
+      echo "$APPNAME: Unknown platform $PLATFORM"
+      exit 2
+      ;;
+  esac
+  ./configure $platform --enable-shared --disable-static --enable-release --enable-ILUT \
+    --enable-ILU --enable-game-formats=no --disable-blp --enable-bmp --disable-dcx --disable-dds \
+    --disable-dicom --disable-doom --disable-exr --disable-fits --disable-gif --disable-hdr \
+    --disable-icns --disable-icon --disable-iff --disable-ilbm --enable-jpeg --disable-jp2 \
+    --disable-lcms --disable-lif --disable-iwi --disable-mdl --disable-mng --disable-mp3 \
+    --disable-pcx --disable-pcd --disable-pic --disable-pix --enable-png --disable-pnm \
+    --disable-psd --disable-psp --disable-pxr --disable-raw --disable-rot --disable-sgi \
+    --disable-sun --disable-texture --enable-tga --disable-tpl --disable-tiff --disable-utx \
+    --disable-vtf --disable-wal --disable-wbmp --disable-wdp --disable-xpm --disable-allegro \
+    --disable-directx8 --disable-directx9 --enable-opengl --disable-sdl --disable-w32 \
+    --enable-x11 --disable-shm --enable-render --with-examples=no --prefix=$OUT_DIR_ABSOLUTE
+}
+
+devil_build()
+{
+  make
+  make install
+}
+
+modplug_set()
+{
+  LIB_NAME="ModPlug"
+  LIB_VERSION="0.8.8.5"
+  LIB_DOWNLOAD="http://downloads.sourceforge.net/project/modplug-xmms/libmodplug/0.8.8.5/libmodplug-0.8.8.5.tar.gz"
+  LIB_ARCHIVE="libmodplug-0.8.8.5.tar.gz"
+  LIB_DIRECTORY="libmodplug-0.8.8.5/"
+  LIB_CONFIGURE="modplug_configure"
+  LIB_BUILD="modplug_build"
+}
+
+modplug_configure()
+{
+  export CFLAGS="-m$PLATFORM"
+  export CXXFLAGS="-m$PLATFORM"
+  export LDFLAGS="-m$PLATFORM"
+  export PKG_CONFIG_PATH="$OUT_DIR_ABSOLUTE/lib/pkgconfig"
+  ./configure --disable-static --enable-shared --prefix=$OUT_DIR_ABSOLUTE 
+}
+
+modplug_build()
+{
+  make
+  make install
+}
+
 love2d_set()
 {
   LIB_NAME="Love2D"
@@ -127,7 +196,7 @@ love2d_configure()
 {
   export CFLAGS="-m$PLATFORM"
   export LDFLAGS="-m$PLATFORM"
-  export PKG_CONFIG_PATH="$OUT_DIR_ABSOLUTE/lib"
+  export PKG_CONFIG_PATH="$OUT_DIR_ABSOLUTE/lib/pkgconfig"
   ./configure --enable-shared --enable-static --disable-osx --enable-gme --with-lua=luajit \
     --prefix=$OUT_DIR_ABSOLUTE
 }
@@ -145,7 +214,7 @@ Usage: $APPNAME [options] [command..]
 Options:
  -h, --help                 Display this usage message
  -l, --library <library>    Library to use; Love2D, LuaJIT, LibSDL,
-                            OpenAL, or all [$LIBRARY]
+                            OpenAL, DevIL, ModPlug, or all [$LIBRARY]
  -p, --platform <platform>  Platform to target; 32 or 64 [$PLATFORM]
  -r, --remove <type>        Components to remove during a clean; archive,
                             build, or both [$REMOVE]
@@ -255,6 +324,8 @@ for lib in $LIBRARY ; do
     libsdl) libsdl_set ;;
     love2d) love2d_set ;;
     openal) openal_set ;;
+    devil)  devil_set  ;;
+    modplug) modplug_set ;;
     *)
       echo "$APPNAME: Unknown library $lib"
       exit 1
