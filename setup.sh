@@ -12,7 +12,7 @@ PLATFORM="32"
 REMOVE="build"
 COMMANDS=""
 SETUP="download extract patch configure build"
-LIBRARIES="luajit libsdl openal devil modplug ogg vorbis physfs love2d"
+LIBRARIES="luajit libsdl openal devil modplug ogg vorbis physfs mpg123 love2d"
 
 PATCHES_DIR=patches
 CACHE_DIR=.cache
@@ -269,6 +269,41 @@ physfs_build()
   make install
 }
 
+mpg123_set()
+{
+  LIB_NAME="mpg123"
+  LIB_VERSION="1.20.1"
+  LIB_DOWNLOAD="http://downloads.sourceforge.net/project/mpg123/mpg123/1.20.1/mpg123-1.20.1.tar.bz2"
+  LIB_ARCHIVE="mpg123-1.20.1.tar.bz2"
+  LIB_DIRECTORY="mpg123-1.20.1/"
+  LIB_CONFIGURE="mpg123_configure"
+  LIB_BUILD="mpg123_build"
+}
+
+mpg123_configure()
+{
+  export CFLAGS="-m$PLATFORM"
+  export CPPFLAGS="-m$PLATFORM"
+  export LDFLAGS="-m$PLATFORM"
+  export PKG_CONFIG_PATH="$OUT_DIR_ABSOLUTE/lib/pkgconfig"
+  case $PLATFORM in
+    32) local platform="--with-cpu=x86" ;;
+    64) local platform="--with-cpu=x86-64" ;;
+    *)
+      echo "$APPNAME: Unknown platform $PLATFORM"
+      exit 2
+      ;;
+  esac
+  ./configure $platform --prefix=$OUT_DIR_ABSOLUTE --disable-static --enable-shared \
+    --with-audio=alsa,dummy,oss --with-optimization=3
+}
+
+mpg123_build()
+{
+  make
+  make install
+}
+
 love2d_configure()
 {
   export CFLAGS="-m$PLATFORM -I$OUT_DIR_ABSOLUTE/include"
@@ -291,7 +326,8 @@ Usage: $APPNAME [options] [command..]
 Options:
  -h, --help                 Display this usage message
  -l, --library <library>    Library to use; Love2D, LuaJIT, LibSDL,
-                            OpenAL, DevIL, ModPlug, Vorbis, or all [$LIBRARY]
+                            OpenAL, DevIL, ModPlug, Vorbis, mpg123,
+                            or all [$LIBRARY]
  -p, --platform <platform>  Platform to target; 32 or 64 [$PLATFORM]
  -r, --remove <type>        Components to remove during a clean; archive,
                             build, or both [$REMOVE]
@@ -406,6 +442,7 @@ for lib in $LIBRARY ; do
     vorbis) vorbis_set ;;
     physfs) physfs_set ;;
     ogg) ogg_set ;;
+    mpg123) mpg123_set ;;
     *)
       echo "$APPNAME: Unknown library $lib"
       exit 1
