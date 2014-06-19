@@ -6,7 +6,8 @@ Ubuntu 14.04:
 sudo apt-get install build-essential gcc-4.8-multilib g++-4.8-multilib \
   cmake wget libjpeg8-dev libjpeg8:i386 zlib1g-dev zlib1g:i386 \
   libgl1-mesa-glx:i386 libgl1-mesa-dev libpng12-0:i386 libpng12-dev \
-  libasound2-dev libasound2:i386 libltdl7:i386 libltdl-dev
+  libasound2-dev libasound2:i386 libltdl7:i386 libltdl-dev \
+  libfreetype6:i386
 
 A few words on Symlinks
 =============
