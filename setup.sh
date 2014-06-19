@@ -78,7 +78,7 @@ libsdl_configure()
     --disable-fusionsound --disable-fusionsound-shared --enable-video-dummy --enable-video-opengl \
     --enable-video-opengles --enable-libudev --enable-dbus --enable-input-tslib --enable-pthreads \
     --enable-pthread-sem --disable-directx --enable-sdl-dlopen --enable-clock_gettime \
-    --enable-rpath --disable-render-d3d --prefix=$OUT_DIR_ABSOLUTE
+    --disable-rpath --disable-render-d3d --prefix=$OUT_DIR_ABSOLUTE
 }
 
 libsdl_build()
