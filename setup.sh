@@ -12,7 +12,7 @@ PLATFORM="32"
 REMOVE="build"
 COMMANDS=""
 SETUP="download extract patch configure build"
-LIBRARIES="luajit libsdl openal devil modplug love2d"
+LIBRARIES="luajit libsdl openal devil modplug ogg vorbis love2d"
 
 PATCHES_DIR=patches
 CACHE_DIR=.cache
@@ -180,6 +180,56 @@ modplug_build()
   make install
 }
 
+ogg_set()
+{
+  LIB_NAME="OGG"
+  LIB_VERSION="1.3.4"
+  LIB_DOWNLOAD="http://downloads.xiph.org/releases/ogg/libogg-1.3.2.tar.xz"
+  LIB_ARCHIVE="libogg-1.3.2.tar.xz"
+  LIB_DIRECTORY="libogg-1.3.2/"
+  LIB_CONFIGURE="ogg_configure"
+  LIB_BUILD="ogg_build"
+}
+
+ogg_configure()
+{
+  export CFLAGS="-m$PLATFORM"
+  export LDFLAGS="-m$PLATFORM"
+  export PKG_CONFIG_PATH="$OUT_DIR_ABSOLUTE/lib/pkgconfig"
+  ./configure --prefix=$OUT_DIR_ABSOLUTE --disable-static --enable-shared 
+}
+
+ogg_build()
+{
+  make
+  make install
+}
+
+vorbis_set()
+{
+  LIB_NAME="Vorbis"
+  LIB_VERSION="1.3.4"
+  LIB_DOWNLOAD="http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.4.tar.xz"
+  LIB_ARCHIVE="libvorbis-1.3.4.tar.xz"
+  LIB_DIRECTORY="libvorbis-1.3.4/"
+  LIB_CONFIGURE="vorbis_configure"
+  LIB_BUILD="vorbis_build"
+}
+
+vorbis_configure()
+{
+  export CFLAGS="-m$PLATFORM"
+  export LDFLAGS="-m$PLATFORM"
+  export PKG_CONFIG_PATH="$OUT_DIR_ABSOLUTE/lib/pkgconfig"
+  ./configure --prefix=$OUT_DIR_ABSOLUTE --disable-static --enable-shared 
+}
+
+vorbis_build()
+{
+  make
+  make install
+}
+
 love2d_set()
 {
   LIB_NAME="Love2D"
@@ -214,7 +264,7 @@ Usage: $APPNAME [options] [command..]
 Options:
  -h, --help                 Display this usage message
  -l, --library <library>    Library to use; Love2D, LuaJIT, LibSDL,
-                            OpenAL, DevIL, ModPlug, or all [$LIBRARY]
+                            OpenAL, DevIL, ModPlug, Vorbis, or all [$LIBRARY]
  -p, --platform <platform>  Platform to target; 32 or 64 [$PLATFORM]
  -r, --remove <type>        Components to remove during a clean; archive,
                             build, or both [$REMOVE]
@@ -326,6 +376,8 @@ for lib in $LIBRARY ; do
     openal) openal_set ;;
     devil)  devil_set  ;;
     modplug) modplug_set ;;
+    vorbis) vorbis_set ;;
+    ogg) ogg_set ;;
     *)
       echo "$APPNAME: Unknown library $lib"
       exit 1
