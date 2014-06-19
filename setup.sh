@@ -12,7 +12,7 @@ PLATFORM="32"
 REMOVE="build"
 COMMANDS=""
 SETUP="download extract patch configure build"
-LIBRARIES="luajit libsdl openal devil modplug ogg vorbis physfs mpg123 love2d"
+LIBRARIES="luajit libsdl openal devil modplug ogg vorbis physfs mpg123 gme love2d"
 
 PATCHES_DIR=patches
 CACHE_DIR=.cache
@@ -304,18 +304,46 @@ mpg123_build()
   make install
 }
 
+gme_set()
+{
+  LIB_NAME="gme"
+  LIB_VERSION="1.20.1"
+  LIB_DOWNLOAD="https://game-music-emu.googlecode.com/files/game-music-emu-0.6.0.tar.bz2"
+  LIB_ARCHIVE="game-music-emu-0.6.0.tar.bz2"
+  LIB_DIRECTORY="game-music-emu-0.6.0/"
+  LIB_CONFIGURE="gme_configure"
+  LIB_BUILD="gme_build"
+}
+
+gme_configure()
+{
+  export CFLAGS="-m$PLATFORM"
+  export CXXFLAGS="-m$PLATFORM"
+  export LDFLAGS="-m$PLATFORM"
+  export PKG_CONFIG_PATH="$OUT_DIR_ABSOLUTE/lib/pkgconfig"
+  cmake -DCMAKE_INSTALL_PREFIX=$OUT_DIR_ABSOLUTE
+}
+
+gme_build()
+{
+  make
+  make install
+}
+
 love2d_configure()
 {
-  export CFLAGS="-m$PLATFORM -I$OUT_DIR_ABSOLUTE/include"
+  export CFLAGS="-m$PLATFORM -I$OUT_DIR_ABSOLUTE/include -I$OUT_DIR_ABSOLUTE/include/gme"
+  export CXXFLAGS="-m$PLATFORM -I$OUT_DIR_ABSOLUTE/include -I$OUT_DIR_ABSOLUTE/include/gme"
   export LDFLAGS="-m$PLATFORM -L$OUT_DIR_ABSOLUTE/lib"
   export PKG_CONFIG_PATH="$OUT_DIR_ABSOLUTE/lib/pkgconfig"
-  ./configure --enable-shared --enable-static --disable-osx --enable-gme --with-lua=luajit \
+  ./configure --enable-shared --disable-static --disable-osx --enable-gme --with-lua=luajit \
     --prefix=$OUT_DIR_ABSOLUTE
 }
 
 love2d_build()
 {
-  true
+  make
+  make install
 }
 
 print_help()
@@ -326,7 +354,7 @@ Usage: $APPNAME [options] [command..]
 Options:
  -h, --help                 Display this usage message
  -l, --library <library>    Library to use; Love2D, LuaJIT, LibSDL,
-                            OpenAL, DevIL, ModPlug, Vorbis, mpg123,
+                            OpenAL, DevIL, ModPlug, Vorbis, mpg123, gme,
                             or all [$LIBRARY]
  -p, --platform <platform>  Platform to target; 32 or 64 [$PLATFORM]
  -r, --remove <type>        Components to remove during a clean; archive,
@@ -443,6 +471,7 @@ for lib in $LIBRARY ; do
     physfs) physfs_set ;;
     ogg) ogg_set ;;
     mpg123) mpg123_set ;;
+    gme) gme_set ;;
     *)
       echo "$APPNAME: Unknown library $lib"
       exit 1
