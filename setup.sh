@@ -124,8 +124,9 @@ devil_set()
 
 devil_configure()
 {
-  export CFLAGS=""
-  export LDFLAGS=""
+  export CFLAGS="-m$PLATFORM"
+  export CXXFLAGS="-m$PLATFORM"
+  export LDFLAGS="-m$PLATFORM"
   export PKG_CONFIG_PATH="$OUT_DIR_ABSOLUTE/lib/pkgconfig"
   case $PLATFORM in
     32) local platform="--enable-x86 --disable-x86_64" ;;
@@ -135,8 +136,8 @@ devil_configure()
       exit 2
       ;;
   esac
-  ./configure $platform --enable-shared --disable-static --enable-release --enable-ILUT \
-    --enable-ILU --enable-game-formats=no --disable-blp --enable-bmp --disable-dcx --disable-dds \
+  ./configure $platform --enable-shared --disable-static --enable-release --disable-ILUT \
+    --disable-ILU --enable-game-formats=no --disable-blp --enable-bmp --disable-dcx --disable-dds \
     --disable-dicom --disable-doom --disable-exr --disable-fits --disable-gif --disable-hdr \
     --disable-icns --disable-icon --disable-iff --disable-ilbm --enable-jpeg --disable-jp2 \
     --disable-lcms --disable-lif --disable-iwi --disable-mdl --disable-mng --disable-mp3 \
