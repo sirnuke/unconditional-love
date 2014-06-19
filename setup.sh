@@ -12,7 +12,7 @@ PLATFORM="32"
 REMOVE="build"
 COMMANDS=""
 SETUP="download extract patch configure build"
-LIBRARIES="luajit libsdl openal devil modplug ogg vorbis love2d"
+LIBRARIES="luajit libsdl openal devil modplug ogg vorbis physfs love2d"
 
 PATCHES_DIR=patches
 CACHE_DIR=.cache
@@ -242,11 +242,37 @@ love2d_set()
   LIB_BUILD="love2d_build"
 }
 
+physfs_set()
+{
+  LIB_NAME="PhysFS"
+  LIB_VERSION="2.0.3"
+  LIB_DOWNLOAD="https://icculus.org/physfs/downloads/physfs-2.0.3.tar.bz2"
+  LIB_ARCHIVE="physfs-2.0.3.tar.bz2"
+  LIB_DIRECTORY="physfs-2.0.3/"
+  LIB_CONFIGURE="physfs_configure"
+  LIB_BUILD="physfs_build"
+}
+
+physfs_configure()
+{
+  export CFLAGS="-m$PLATFORM"
+  export CXXFLAGS="-m$PLATFORM"
+  export LDFLAGS="-m$PLATFORM"
+  export PKG_CONFIG_PATH="$OUT_DIR_ABSOLUTE/lib/pkgconfig"
+  cmake -DCMAKE_INSTALL_PREFIX=$OUT_DIR_ABSOLUTE -DPHYSFS_BUILD_STATIC=false \
+    -DPHYSFS_BUILD_TEST=false
+}
+
+physfs_build()
+{
+  make
+  make install
+}
 
 love2d_configure()
 {
-  export CFLAGS="-m$PLATFORM"
-  export LDFLAGS="-m$PLATFORM"
+  export CFLAGS="-m$PLATFORM -I$OUT_DIR_ABSOLUTE/include"
+  export LDFLAGS="-m$PLATFORM -L$OUT_DIR_ABSOLUTE/lib"
   export PKG_CONFIG_PATH="$OUT_DIR_ABSOLUTE/lib/pkgconfig"
   ./configure --enable-shared --enable-static --disable-osx --enable-gme --with-lua=luajit \
     --prefix=$OUT_DIR_ABSOLUTE
@@ -378,6 +404,7 @@ for lib in $LIBRARY ; do
     devil)  devil_set  ;;
     modplug) modplug_set ;;
     vorbis) vorbis_set ;;
+    physfs) physfs_set ;;
     ogg) ogg_set ;;
     *)
       echo "$APPNAME: Unknown library $lib"
