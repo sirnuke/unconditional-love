@@ -86,14 +86,32 @@ libjpeg_set()
   LIB_BUILD="libjpeg_build"
 }
 
-libjpeg_build()
-{
-  true
-}
-
 libjpeg_configure()
 {
-  true
+  export JPEG_LIB_VERSION=80
+  export CFLAGS="-m$PLATFORM"
+  export LDFLAGS="-m$PLATFORM"
+  case $PLATFORM in
+    32)
+      export ARCH="i686"
+      local build="--build i686-linux-gnu"
+      ;;
+    64)
+      export ARCH="x86_64"
+      local build="--build x86_64-linux-gnu"
+      ;;
+    *)
+      echo "$APPNAME: Unknown platform $PLATFORM"
+      exit 2
+      ;;
+  esac
+  ./configure --enable-shared --disable-static --prefix=$OUT_DIR_ABSOLUTE $build
+}
+
+libjpeg_build()
+{
+  make
+  make install
 }
 
 luajit_set()
