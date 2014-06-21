@@ -61,14 +61,18 @@ libpng_set()
   LIB_BUILD="libpng_build"
 }
 
-libpng_build()
-{
-  true
-}
-
 libpng_configure()
 {
-  true
+  export CFLAGS="-m$PLATFORM"
+  export LDFLAGS="-m$PLATFORM"
+  ./configure --enable-shared --disable-static --prefix=$OUT_DIR_ABSOLUTE \
+    --with-zlib-prefix=$OUT_DIR_ABSOLUTE
+}
+
+libpng_build()
+{
+  make
+  make install
 }
 
 libjpeg_set()
