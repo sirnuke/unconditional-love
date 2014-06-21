@@ -13,7 +13,7 @@ REMOVE="build"
 COMMANDS=""
 DEFAULT="build"
 ALL="download extract build"
-LIBRARIES="luajit libsdl openal devil modplug ogg vorbis physfs mpg123 gme love2d"
+LIBRARIES="zlib libpng libjpeg luajit libsdl openal devil modplug ogg vorbis physfs mpg123 gme love2d"
 
 PATCHES_DIR=patches
 CACHE_DIR=.cache
@@ -25,6 +25,69 @@ if [ ! -d $EXTRACT_DIR ] ; then mkdir $EXTRACT_DIR ; fi
 if [ ! -d $OUT_DIR ] ; then mkdir $OUT_DIR ; fi
 
 OUT_DIR_ABSOLUTE=`readlink -f $OUT_DIR`
+
+zlib_set()
+{
+  LIB_NAME="zlib"
+  LIB_VERSION="1.2.8"
+  LIB_DOWNLOAD="http://downloads.sourceforge.net/libpng/zlib-1.2.8.tar.xz"
+  LIB_ARCHIVE="zlib-1.2.8.tar.xz"
+  LIB_DIRECTORY="zlib-1.2.8/"
+  LIB_CONFIGURE="zlib_configure"
+  LIB_BUILD="zlib_build"
+}
+
+zlib_build()
+{
+  true
+}
+
+zlib_configure()
+{
+  true
+}
+
+libpng_set()
+{
+  LIB_NAME="libpng"
+  LIB_VERSION="1.6.12"
+  LIB_DOWNLOAD="http://downloads.sourceforge.net/libpng/libpng-1.6.12.tar.xz"
+  LIB_ARCHIVE="libpng-1.6.12.tar.xz"
+  LIB_DIRECTORY="libpng-1.6.12/"
+  LIB_CONFIGURE="libpng_configure"
+  LIB_BUILD="libpng_build"
+}
+
+libpng_build()
+{
+  true
+}
+
+libpng_configure()
+{
+  true
+}
+
+libjpeg_set()
+{
+  LIB_NAME="libjpeg"
+  LIB_VERSION="1.3.1"
+  LIB_DOWNLOAD="http://download.sourceforge.net/libjpeg-turbo/1.3.1/libjpeg-turbo-1.3.1.tar.gz"
+  LIB_ARCHIVE="libjpeg-turbo-1.3.1.tar.gz"
+  LIB_DIRECTORY="libjpeg-turbo-1.3.1/"
+  LIB_CONFIGURE="libjpeg_configure"
+  LIB_BUILD="libjpeg_build"
+}
+
+libjpeg_build()
+{
+  true
+}
+
+libjpeg_configure()
+{
+  true
+}
 
 luajit_set()
 {
@@ -356,7 +419,7 @@ Options:
  -h, --help                 Display this usage message
  -l, --library <library>    Library to use; Love2D, LuaJIT, LibSDL,
                             OpenAL, DevIL, ModPlug, Vorbis, mpg123, gme,
-                            or all [$LIBRARY]
+                            zlib, libpng, libjpeg, or all [$LIBRARY]
  -p, --platform <platform>  Platform to target; 32 or 64 [$PLATFORM]
  -r, --remove <type>        Components to remove during a clean; archive,
                             build, or both [$REMOVE]
@@ -467,6 +530,9 @@ for lib in $LIBRARY ; do
     ogg) ogg_set ;;
     mpg123) mpg123_set ;;
     gme) gme_set ;;
+    zlib) zlib_set ;;
+    libjpeg) libjpeg_set ;;
+    libpng) libpng_set ;;
     *)
       echo "$APPNAME: Unknown library $lib"
       exit 1
