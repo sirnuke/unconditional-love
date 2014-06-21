@@ -11,7 +11,8 @@ LIBRARY="all"
 PLATFORM="32"
 REMOVE="build"
 COMMANDS=""
-SETUP="download extract patch configure build"
+DEFAULT="build"
+ALL="download extract build"
 LIBRARIES="luajit libsdl openal devil modplug ogg vorbis physfs mpg123 gme love2d"
 
 PATCHES_DIR=patches
@@ -363,14 +364,10 @@ Commands:
 [command..] specifies one or more actions to be executed, in order.
 
 * DOWNLOAD downloads library source archives, if not already cached
-* EXTRACT extracts the library source code, if not already extracted
-* PATCH applies any local patches, and will print errors if already
-  patched
-* CONFIGURE runs any library configuration scripts; platform setting is
-  only useful for this command
-* BUILD compiles and installs libraries to the internal prefix
-* SETUP is equivalent to 'download extract patch configure 
-  build' (default)
+* EXTRACT extracts and patches the library source code, if not already extracted
+* BUILD runs library configuration scripts and compiles; platform setting is
+  only useful for this command (default)
+* ALL is equivalent to 'download extract build'
 * CLEAN removes source archives, or extracted source, or both; remove
   setting is only valid for this command"
   exit 0
@@ -439,11 +436,9 @@ while [[ $# > 0 ]] ; do
   case ${1,,} in
     download) COMMANDS="$COMMANDS download" ;;
     extract) COMMANDS="$COMMANDS extract" ;;
-    patch) COMMANDS="$COMMANDS patch" ;;
-    configure|config) COMMANDS="$COMMANDS configure" ;;
     clean) COMMANDS="$COMMANDS clean" ;;
     build|compile) COMMANDS="$COMMANDS build" ;;
-    setup) COMMANDS="$COMMANDS $SETUP" ;;
+    all) COMMANDS="$COMMANDS $ALL" ;;
     *)
       echo "$APPNAME: Unknown command $1"
       exit 1
@@ -452,7 +447,7 @@ while [[ $# > 0 ]] ; do
 done
 
 if [ -z "$COMMANDS" ] ; then
-  COMMANDS="$SETUP"
+  COMMANDS="$DEFAULT"
 fi
 
 if [ "$LIBRARY" == "all" ]; then
@@ -490,27 +485,19 @@ for lib in $LIBRARY ; do
         ;;
       extract)
         if [ ! -d "$EXTRACT_DIR/$LIB_DIRECTORY" ] ; then
-          echo "Extracting $LIB_NAME..."
+          echo "Extracting and patching $LIB_NAME..."
           tar -C $EXTRACT_DIR -xf $CACHE_DIR/$LIB_ARCHIVE
+          for patch in $PATCHES_DIR/$LIB_DIRECTORY/*.patch ; do
+            patch -p 0 -t -u -r - --forward -d $EXTRACT_DIR < $patch
+          done
         else
           echo "$LIB_NAME already extracted (remove with CLEAN command)"
         fi
         ;;
-      patch)
-        echo "Patching $LIB_NAME..."
-        for patch in $PATCHES_DIR/$LIB_DIRECTORY/*.patch ; do
-          patch -p 0 -t -u -r - --forward -d $EXTRACT_DIR < $patch
-        done
-        ;;
-      configure)
-        echo "Configuring $LIB_NAME..."
-        pushd $EXTRACT_DIR/$LIB_DIRECTORY > /dev/null
-        $LIB_CONFIGURE
-        popd > /dev/null
-        ;;
       build)
         echo "Building $LIB_NAME..."
         pushd $EXTRACT_DIR/$LIB_DIRECTORY > /dev/null
+        $LIB_CONFIGURE
         $LIB_BUILD
         popd > /dev/null
         ;;
