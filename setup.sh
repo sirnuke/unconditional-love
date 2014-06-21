@@ -37,14 +37,17 @@ zlib_set()
   LIB_BUILD="zlib_build"
 }
 
-zlib_build()
-{
-  true
-}
-
 zlib_configure()
 {
-  true
+  export CFLAGS="-m$PLATFORM"
+  export LDFLAGS="-m$PLATFORM"
+  ./configure --prefix=$OUT_DIR_ABSOLUTE
+}
+
+zlib_build()
+{
+  make
+  make install
 }
 
 libpng_set()
