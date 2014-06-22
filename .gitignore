@@ -1,6 +1,7 @@
 .*.sw*
 .cache
+.source
 .build
-out
+bin
 dev
 org

@@ -17,12 +17,14 @@ LIBRARIES="zlib libpng libjpeg luajit libsdl openal devil modplug ogg vorbis phy
 
 PATCHES_DIR=patches
 CACHE_DIR=.cache
-EXTRACT_DIR=.build
-OUT_DIR=out
+EXTRACT_DIR=.source
+OUT_DIR=.build
+BIN_DIR=bin
 
 if [ ! -d $CACHE_DIR ] ; then mkdir $CACHE_DIR ; fi
 if [ ! -d $EXTRACT_DIR ] ; then mkdir $EXTRACT_DIR ; fi
 if [ ! -d $OUT_DIR ] ; then mkdir $OUT_DIR ; fi
+if [ ! -d $BIN_DIR ] ; then mkdir $BIN_DIR ; fi
 
 OUT_DIR_ABSOLUTE=`readlink -f $OUT_DIR`
 
@@ -33,8 +35,6 @@ zlib_set()
   LIB_DOWNLOAD="http://downloads.sourceforge.net/libpng/zlib-1.2.8.tar.xz"
   LIB_ARCHIVE="zlib-1.2.8.tar.xz"
   LIB_DIRECTORY="zlib-1.2.8/"
-  LIB_CONFIGURE="zlib_configure"
-  LIB_BUILD="zlib_build"
 }
 
 zlib_configure()
@@ -57,8 +57,6 @@ libpng_set()
   LIB_DOWNLOAD="http://downloads.sourceforge.net/libpng/libpng-1.6.12.tar.xz"
   LIB_ARCHIVE="libpng-1.6.12.tar.xz"
   LIB_DIRECTORY="libpng-1.6.12/"
-  LIB_CONFIGURE="libpng_configure"
-  LIB_BUILD="libpng_build"
 }
 
 libpng_configure()
@@ -82,8 +80,6 @@ libjpeg_set()
   LIB_DOWNLOAD="http://download.sourceforge.net/libjpeg-turbo/1.3.1/libjpeg-turbo-1.3.1.tar.gz"
   LIB_ARCHIVE="libjpeg-turbo-1.3.1.tar.gz"
   LIB_DIRECTORY="libjpeg-turbo-1.3.1/"
-  LIB_CONFIGURE="libjpeg_configure"
-  LIB_BUILD="libjpeg_build"
 }
 
 libjpeg_configure()
@@ -121,8 +117,6 @@ luajit_set()
   LIB_DOWNLOAD="http://luajit.org/download/LuaJIT-2.0.3.tar.gz"
   LIB_ARCHIVE="LuaJIT-2.0.3.tar.gz"
   LIB_DIRECTORY="LuaJIT-2.0.3/"
-  LIB_CONFIGURE="luajit_configure"
-  LIB_BUILD="luajit_build"
 }
 
 luajit_configure()
@@ -144,8 +138,6 @@ libsdl_set()
   LIB_DOWNLOAD="http://libsdl.org/release/SDL2-2.0.3.tar.gz"
   LIB_ARCHIVE="SDL2-2.0.3.tar.gz"
   LIB_DIRECTORY="SDL2-2.0.3/"
-  LIB_CONFIGURE="libsdl_configure"
-  LIB_BUILD="libsdl_build"
 }
 
 libsdl_configure()
@@ -183,8 +175,6 @@ openal_set()
   LIB_DOWNLOAD="http://kcat.strangesoft.net/openal-releases/openal-soft-1.15.1.tar.bz2"
   LIB_ARCHIVE="openal-soft-1.15.1.tar.bz2"
   LIB_DIRECTORY="openal-soft-1.15.1/"
-  LIB_CONFIGURE="openal_configure"
-  LIB_BUILD="openal_build"
 }
 
 openal_configure()
@@ -207,8 +197,6 @@ devil_set()
   LIB_DOWNLOAD="http://downloads.sourceforge.net/openil/DevIL-1.7.8.tar.gz"
   LIB_ARCHIVE="DevIL-1.7.8.tar.gz"
   LIB_DIRECTORY="devil-1.7.8/"
-  LIB_CONFIGURE="devil_configure"
-  LIB_BUILD="devil_build"
 }
 
 devil_configure()
@@ -251,8 +239,6 @@ modplug_set()
   LIB_DOWNLOAD="http://downloads.sourceforge.net/project/modplug-xmms/libmodplug/0.8.8.5/libmodplug-0.8.8.5.tar.gz"
   LIB_ARCHIVE="libmodplug-0.8.8.5.tar.gz"
   LIB_DIRECTORY="libmodplug-0.8.8.5/"
-  LIB_CONFIGURE="modplug_configure"
-  LIB_BUILD="modplug_build"
 }
 
 modplug_configure()
@@ -277,8 +263,6 @@ ogg_set()
   LIB_DOWNLOAD="http://downloads.xiph.org/releases/ogg/libogg-1.3.2.tar.xz"
   LIB_ARCHIVE="libogg-1.3.2.tar.xz"
   LIB_DIRECTORY="libogg-1.3.2/"
-  LIB_CONFIGURE="ogg_configure"
-  LIB_BUILD="ogg_build"
 }
 
 ogg_configure()
@@ -302,8 +286,6 @@ vorbis_set()
   LIB_DOWNLOAD="http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.4.tar.xz"
   LIB_ARCHIVE="libvorbis-1.3.4.tar.xz"
   LIB_DIRECTORY="libvorbis-1.3.4/"
-  LIB_CONFIGURE="vorbis_configure"
-  LIB_BUILD="vorbis_build"
 }
 
 vorbis_configure()
@@ -327,8 +309,6 @@ love2d_set()
   LIB_DOWNLOAD="https://bitbucket.org/rude/love/downloads/love-0.9.1-linux-src.tar.gz"
   LIB_ARCHIVE="love-0.9.1-linux-src.tar.gz"
   LIB_DIRECTORY="love-0.9.1/"
-  LIB_CONFIGURE="love2d_configure"
-  LIB_BUILD="love2d_build"
 }
 
 physfs_set()
@@ -338,8 +318,6 @@ physfs_set()
   LIB_DOWNLOAD="https://icculus.org/physfs/downloads/physfs-2.0.3.tar.bz2"
   LIB_ARCHIVE="physfs-2.0.3.tar.bz2"
   LIB_DIRECTORY="physfs-2.0.3/"
-  LIB_CONFIGURE="physfs_configure"
-  LIB_BUILD="physfs_build"
 }
 
 physfs_configure()
@@ -365,8 +343,6 @@ mpg123_set()
   LIB_DOWNLOAD="http://downloads.sourceforge.net/project/mpg123/mpg123/1.20.1/mpg123-1.20.1.tar.bz2"
   LIB_ARCHIVE="mpg123-1.20.1.tar.bz2"
   LIB_DIRECTORY="mpg123-1.20.1/"
-  LIB_CONFIGURE="mpg123_configure"
-  LIB_BUILD="mpg123_build"
 }
 
 mpg123_configure()
@@ -400,8 +376,6 @@ gme_set()
   LIB_DOWNLOAD="https://game-music-emu.googlecode.com/files/game-music-emu-0.6.0.tar.bz2"
   LIB_ARCHIVE="game-music-emu-0.6.0.tar.bz2"
   LIB_DIRECTORY="game-music-emu-0.6.0/"
-  LIB_CONFIGURE="gme_configure"
-  LIB_BUILD="gme_build"
 }
 
 gme_configure()
@@ -562,6 +536,8 @@ for lib in $LIBRARY ; do
       echo "$APPNAME: Unknown library $lib"
       exit 1
   esac
+  LIB_CONFIGURE="${lib,,}_configure"
+  LIB_BUILD="${lib,,}_build"
   for cmd in $COMMANDS ; do
     case $cmd in
       download)
