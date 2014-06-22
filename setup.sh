@@ -28,6 +28,22 @@ if [ ! -d $BIN_DIR ] ; then mkdir $BIN_DIR ; fi
 
 OUT_DIR_ABSOLUTE=`readlink -f $OUT_DIR`
 
+libraries()
+{
+  for library in $@ ; do
+    local path=$OUT_DIR/lib/$library
+    local soname=`objdump -p $path|grep SONAME|sed 's/\s*SONAME\s*//'`
+    local out=$BIN_DIR/$soname
+    cp $path $out
+    chmod 644 $out
+    chrpath -l $out > /dev/null
+    if [ "$?" -ne "0" ] ; then
+      chrpath -d $out
+    fi
+    strip -s $out
+  done
+}
+
 zlib_set()
 {
   LIB_NAME="zlib"
@@ -48,6 +64,11 @@ zlib_build()
 {
   make
   make install
+}
+
+zlib_install()
+{
+  libraries "libz.so.1.2.8"
 }
 
 libpng_set()
@@ -71,6 +92,11 @@ libpng_build()
 {
   make
   make install
+}
+
+libpng_install()
+{
+  libraries "libpng16.so.16.12.0"
 }
 
 libjpeg_set()
@@ -110,6 +136,11 @@ libjpeg_build()
   make install
 }
 
+libjpeg_install()
+{
+  libraries "libjpeg.so.8.1.2"
+}
+
 luajit_set()
 {
   LIB_NAME="LuaJIT"
@@ -129,6 +160,11 @@ luajit_build()
 {
   make
   make install
+}
+
+luajit_install()
+{
+  libraries "libluajit-5.1.so.2.0.3"
 }
 
 libsdl_set()
@@ -168,6 +204,11 @@ libsdl_build()
   make install
 }
 
+libsdl_install()
+{
+  libraries "libSDL2-2.0.so.0.2.1"
+}
+
 openal_set()
 {
   LIB_NAME="OpenAL"
@@ -188,6 +229,11 @@ openal_build()
 {
   make
   make install
+}
+
+openal_install()
+{
+  libraries "libopenal.so.1.15.1"
 }
 
 devil_set()
@@ -232,6 +278,11 @@ devil_build()
   make install
 }
 
+devil_install()
+{
+  libraries "libIL.so.1.1.0"
+}
+
 modplug_set()
 {
   LIB_NAME="ModPlug"
@@ -254,6 +305,11 @@ modplug_build()
 {
   make
   make install
+}
+
+modplug_install()
+{
+  libraries "libmodplug.so.1.0.0"
 }
 
 ogg_set()
@@ -279,6 +335,11 @@ ogg_build()
   make install
 }
 
+ogg_install()
+{
+  libraries "libogg.so.0.8.2"
+}
+
 vorbis_set()
 {
   LIB_NAME="Vorbis"
@@ -302,13 +363,9 @@ vorbis_build()
   make install
 }
 
-love2d_set()
+vorbis_install()
 {
-  LIB_NAME="Love2D"
-  LIB_VERSION="0.9.1"
-  LIB_DOWNLOAD="https://bitbucket.org/rude/love/downloads/love-0.9.1-linux-src.tar.gz"
-  LIB_ARCHIVE="love-0.9.1-linux-src.tar.gz"
-  LIB_DIRECTORY="love-0.9.1/"
+  libraries "libvorbis.so.0.4.7" "libvorbisfile.so.3.3.6"
 }
 
 physfs_set()
@@ -334,6 +391,11 @@ physfs_build()
 {
   make
   make install
+}
+
+physfs_install()
+{
+  libraries "libphysfs.so.2.0.3"
 }
 
 mpg123_set()
@@ -369,6 +431,11 @@ mpg123_build()
   make install
 }
 
+mpg123_install()
+{
+  libraries "libmpg123.so.0.40.3"
+}
+
 gme_set()
 {
   LIB_NAME="gme"
@@ -393,6 +460,20 @@ gme_build()
   make install
 }
 
+gme_install()
+{
+  libraries "libgme.so.0.6.0"
+}
+
+love2d_set()
+{
+  LIB_NAME="Love2D"
+  LIB_VERSION="0.9.1"
+  LIB_DOWNLOAD="https://bitbucket.org/rude/love/downloads/love-0.9.1-linux-src.tar.gz"
+  LIB_ARCHIVE="love-0.9.1-linux-src.tar.gz"
+  LIB_DIRECTORY="love-0.9.1/"
+}
+
 love2d_configure()
 {
   export CFLAGS="-m$PLATFORM -I$OUT_DIR_ABSOLUTE/include -I$OUT_DIR_ABSOLUTE/include/gme"
@@ -407,6 +488,11 @@ love2d_build()
 {
   make
   make install
+}
+
+love2d_install()
+{
+  libraries "liblove.so.0.0.0"
 }
 
 print_help()
@@ -538,6 +624,7 @@ for lib in $LIBRARY ; do
   esac
   LIB_CONFIGURE="${lib,,}_configure"
   LIB_BUILD="${lib,,}_build"
+  LIB_INSTALL="${lib,,}_install"
   for cmd in $COMMANDS ; do
     case $cmd in
       download)
@@ -567,6 +654,7 @@ for lib in $LIBRARY ; do
         $LIB_CONFIGURE
         $LIB_BUILD
         popd > /dev/null
+        $LIB_INSTALL
         ;;
       clean)
         echo "Removing $LIB_NAME ($REMOVE)..."
