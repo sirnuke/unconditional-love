@@ -28,6 +28,14 @@ if [ ! -d $BIN_DIR ] ; then mkdir $BIN_DIR ; fi
 
 OUT_DIR_ABSOLUTE=`readlink -f $OUT_DIR`
 
+confirm()
+{
+  if [ "$?" -ne "0" ] ; then
+    echo "$APPNAME: $@ failed!"
+    exit 1
+  fi
+}
+
 libraries()
 {
   for library in $@ ; do
@@ -35,6 +43,7 @@ libraries()
     local soname=`objdump -p $path|grep SONAME|sed 's/\s*SONAME\s*//'`
     local out=$BIN_DIR/$soname
     cp $path $out
+    confirm "cp $path $out"
     process $out
   done
 }
@@ -58,11 +67,14 @@ process()
 {
   for file in $@ ; do
     chmod 644 $file
+    confirm "chmod 644 $file"
     chrpath -l $file > /dev/null
     if [ "$?" -eq "0" ] ; then
       chrpath -d $file > /dev/null
+      confirm "chrpath -d $file"
     fi
     strip -s $file
+    confirm "strip -s $file"
   done
 }
 
@@ -80,12 +92,15 @@ zlib_configure()
   export CFLAGS="-m$PLATFORM"
   export LDFLAGS="-m$PLATFORM"
   ./configure --prefix=$OUT_DIR_ABSOLUTE
+  confirm "./configure --prefix=$OUT_DIR_ABSOLUTE"
 }
 
 zlib_build()
 {
   make
+  confirm "make"
   make install
+  confirm "make install"
 }
 
 zlib_install()
@@ -104,10 +119,13 @@ libpng_set()
 
 libpng_configure()
 {
-  export CFLAGS="-m$PLATFORM"
-  export LDFLAGS="-m$PLATFORM"
-  ./configure --enable-shared --disable-static --prefix=$OUT_DIR_ABSOLUTE \
-    --with-zlib-prefix=$OUT_DIR_ABSOLUTE
+  echo "'$OUT_DIR_ABSOLUTE'"
+  export CFLAGS="-m$PLATFORM -I$OUT_DIR_ABSOLUTE/include"
+  export LDFLAGS="-m$PLATFORM -L$OUT_DIR_ABSOLUTE/lib"
+  ./configure --enable-shared --disable-static --prefix=$OUT_DIR_ABSOLUTE --with-zlib-prefix=$OUT_DIR_ABSOLUTE
+  #./configure --enable-shared --disable-static --prefix=$OUT_DIR_ABSOLUTE --with-zlib-prefix=$OUT_DIR_ABSOLUTE
+  confirm "./configure --enable-shared --disable-static --prefix=$OUT_DIR_ABSOLUTE \
+--with-zlib-prefix='$OUT_DIR_ABSOLUTE'"
 }
 
 libpng_build()
