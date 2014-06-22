@@ -123,7 +123,6 @@ libpng_configure()
   export CFLAGS="-m$PLATFORM -I$OUT_DIR_ABSOLUTE/include"
   export LDFLAGS="-m$PLATFORM -L$OUT_DIR_ABSOLUTE/lib"
   ./configure --enable-shared --disable-static --prefix=$OUT_DIR_ABSOLUTE --with-zlib-prefix=$OUT_DIR_ABSOLUTE
-  #./configure --enable-shared --disable-static --prefix=$OUT_DIR_ABSOLUTE --with-zlib-prefix=$OUT_DIR_ABSOLUTE
   confirm "./configure --enable-shared --disable-static --prefix=$OUT_DIR_ABSOLUTE \
 --with-zlib-prefix='$OUT_DIR_ABSOLUTE'"
 }
