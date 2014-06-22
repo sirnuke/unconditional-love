@@ -39,12 +39,27 @@ libraries()
   done
 }
 
+binaries()
+{
+  for binary in $@ ; do
+    local path=$OUT_DIR/bin/$binary
+    local out=$BIN_DIR/$binary
+    cp $path $out
+    chrpath -l $out > /dev/null
+    if [ "$?" -eq "0" ] ; then
+      chrpath -d $out > /dev/null
+    fi
+    strip -s $out
+    chmod 755 $out
+  done
+}
+
 process()
 {
   for file in $@ ; do
     chmod 644 $file
     chrpath -l $file > /dev/null
-    if [ "$?" -ne "0" ] ; then
+    if [ "$?" -eq "0" ] ; then
       chrpath -d $file > /dev/null
     fi
     strip -s $file
@@ -505,6 +520,7 @@ love2d_build()
 love2d_install()
 {
   libraries "liblove.so.0.0.0"
+  binaries "love"
 }
 
 print_help()
