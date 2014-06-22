@@ -35,12 +35,19 @@ libraries()
     local soname=`objdump -p $path|grep SONAME|sed 's/\s*SONAME\s*//'`
     local out=$BIN_DIR/$soname
     cp $path $out
-    chmod 644 $out
-    chrpath -l $out > /dev/null
+    process $out
+  done
+}
+
+process()
+{
+  for file in $@ ; do
+    chmod 644 $file
+    chrpath -l $file > /dev/null
     if [ "$?" -ne "0" ] ; then
-      chrpath -d $out
+      chrpath -d $file > /dev/null
     fi
-    strip -s $out
+    strip -s $file
   done
 }
 
@@ -434,6 +441,11 @@ mpg123_build()
 mpg123_install()
 {
   libraries "libmpg123.so.0.40.3"
+  mkdir -p $BIN_DIR/mpg123
+  cp $OUT_DIR/lib/mpg123/*.so $BIN_DIR/mpg123
+  for output in `ls $BIN_DIR/mpg123/*.so` ; do
+    process $output
+  done
 }
 
 gme_set()
