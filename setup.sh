@@ -95,14 +95,6 @@ zlib_configure()
   confirm "./configure --prefix=$OUT_DIR_ABSOLUTE"
 }
 
-zlib_build()
-{
-  make
-  confirm "make"
-  make install
-  confirm "make install"
-}
-
 zlib_install()
 {
   libraries "libz.so.1.2.8"
@@ -125,12 +117,6 @@ libpng_configure()
   ./configure --enable-shared --disable-static --prefix=$OUT_DIR_ABSOLUTE --with-zlib-prefix=$OUT_DIR_ABSOLUTE
   confirm "./configure --enable-shared --disable-static --prefix=$OUT_DIR_ABSOLUTE \
 --with-zlib-prefix='$OUT_DIR_ABSOLUTE'"
-}
-
-libpng_build()
-{
-  make
-  make install
 }
 
 libpng_install()
@@ -169,12 +155,6 @@ libjpeg_configure()
   ./configure --enable-shared --disable-static --prefix=$OUT_DIR_ABSOLUTE $build
 }
 
-libjpeg_build()
-{
-  make
-  make install
-}
-
 libjpeg_install()
 {
   libraries "libjpeg.so.8.1.2"
@@ -193,12 +173,6 @@ luajit_configure()
 {
   sed -i 's:^ARCH?=.*$:ARCH?='$PLATFORM':' Makefile
   sed -i 's:^export PREFIX=.*$:export PREFIX= '$OUT_DIR_ABSOLUTE':' Makefile
-}
-
-luajit_build()
-{
-  make
-  make install
 }
 
 luajit_install()
@@ -237,12 +211,6 @@ libsdl_configure()
     --disable-rpath --disable-render-d3d --prefix=$OUT_DIR_ABSOLUTE
 }
 
-libsdl_build()
-{
-  make
-  make install
-}
-
 libsdl_install()
 {
   libraries "libSDL2-2.0.so.0.2.1"
@@ -262,12 +230,6 @@ openal_configure()
   export CFLAGS="-m$PLATFORM"
   export LDFLAGS="-m$PLATFORM"
   cmake -DCMAKE_INSTALL_PREFIX=$OUT_DIR_ABSOLUTE -DUTILS=OFF -DEXAMPLES=OFF -DPORTAUDIO=OFF
-}
-
-openal_build()
-{
-  make
-  make install
 }
 
 openal_install()
@@ -311,12 +273,6 @@ devil_configure()
     --enable-x11 --disable-shm --enable-render --with-examples=no --prefix=$OUT_DIR_ABSOLUTE
 }
 
-devil_build()
-{
-  make
-  make install
-}
-
 devil_install()
 {
   libraries "libIL.so.1.1.0"
@@ -338,12 +294,6 @@ modplug_configure()
   export LDFLAGS="-m$PLATFORM"
   export PKG_CONFIG_PATH="$OUT_DIR_ABSOLUTE/lib/pkgconfig"
   ./configure --disable-static --enable-shared --prefix=$OUT_DIR_ABSOLUTE
-}
-
-modplug_build()
-{
-  make
-  make install
 }
 
 modplug_install()
@@ -368,12 +318,6 @@ ogg_configure()
   ./configure --prefix=$OUT_DIR_ABSOLUTE --disable-static --enable-shared 
 }
 
-ogg_build()
-{
-  make
-  make install
-}
-
 ogg_install()
 {
   libraries "libogg.so.0.8.2"
@@ -394,12 +338,6 @@ vorbis_configure()
   export LDFLAGS="-m$PLATFORM"
   export PKG_CONFIG_PATH="$OUT_DIR_ABSOLUTE/lib/pkgconfig"
   ./configure --prefix=$OUT_DIR_ABSOLUTE --disable-static --enable-shared 
-}
-
-vorbis_build()
-{
-  make
-  make install
 }
 
 vorbis_install()
@@ -424,12 +362,6 @@ physfs_configure()
   export PKG_CONFIG_PATH="$OUT_DIR_ABSOLUTE/lib/pkgconfig"
   cmake -DCMAKE_INSTALL_PREFIX=$OUT_DIR_ABSOLUTE -DPHYSFS_BUILD_STATIC=false \
     -DPHYSFS_BUILD_TEST=false
-}
-
-physfs_build()
-{
-  make
-  make install
 }
 
 physfs_install()
@@ -464,12 +396,6 @@ mpg123_configure()
     --with-audio=alsa,dummy,oss --with-optimization=3
 }
 
-mpg123_build()
-{
-  make
-  make install
-}
-
 mpg123_install()
 {
   libraries "libmpg123.so.0.40.3"
@@ -498,12 +424,6 @@ gme_configure()
   cmake -DCMAKE_INSTALL_PREFIX=$OUT_DIR_ABSOLUTE
 }
 
-gme_build()
-{
-  make
-  make install
-}
-
 gme_install()
 {
   libraries "libgme.so.0.6.0"
@@ -526,12 +446,6 @@ love2d_configure()
   export PKG_CONFIG_PATH="$OUT_DIR_ABSOLUTE/lib/pkgconfig"
   ./configure --enable-shared --disable-static --disable-osx --enable-gme --with-lua=luajit \
     --prefix=$OUT_DIR_ABSOLUTE
-}
-
-love2d_build()
-{
-  make
-  make install
 }
 
 love2d_install()
@@ -697,7 +611,14 @@ for lib in $LIBRARY ; do
         echo "Building $LIB_NAME..."
         pushd $EXTRACT_DIR/$LIB_DIRECTORY > /dev/null
         $LIB_CONFIGURE
-        $LIB_BUILD
+        if [ `type -t $LIB_BUILD`"" == 'function' ] ; then
+          $LIB_BUILD
+        else
+          make
+          confirm "make"
+          make install
+          confirm "make install"
+        fi
         popd > /dev/null
         $LIB_INSTALL
         ;;
