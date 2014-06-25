@@ -12,6 +12,7 @@ PLATFORM="32"
 REMOVE="build"
 COMMANDS=""
 DEFAULT="build"
+JOBS=""
 ALL="download extract build"
 LIBRARIES="zlib libpng libjpeg luajit libsdl openal devil modplug ogg vorbis physfs mpg123 gme love2d"
 
@@ -464,6 +465,7 @@ Options:
  -l, --library <library>    Library to use; Love2D, LuaJIT, LibSDL,
                             OpenAL, DevIL, ModPlug, Vorbis, mpg123, gme,
                             zlib, libpng, libjpeg, or all [$LIBRARY]
+ -j, --jobs <jobs>          Number of jobs to run at once while compiling.
  -p, --platform <platform>  Platform to target; 32 or 64 [$PLATFORM]
  -r, --remove <type>        Components to remove during a clean; archive,
                             build, or both [$REMOVE]
@@ -486,7 +488,7 @@ if [ $? -ne 4 ] ; then
   exit 1
 fi
 
-if ! options=$(getopt --options hl:p:r: --long help,library:,platform:,remove: --name $APPNAME -- "$@") ; then
+if ! options=$(getopt --options hl:p:r:j: --long help,library:,platform:,remove:,jobs: --name $APPNAME -- "$@") ; then
   exit 1
 fi
 
@@ -507,6 +509,10 @@ while [[ $# > 0 ]] ; do
       ;;
     -r|--remove)
       REMOVE="$2"
+      shift
+      ;;
+    -j|--jobs)
+      JOBS="-j $2"
       shift
       ;;
     --)
@@ -614,7 +620,7 @@ for lib in $LIBRARY ; do
         if [ `type -t $LIB_BUILD`"" == 'function' ] ; then
           $LIB_BUILD
         else
-          make
+          make $JOBS
           confirm "make"
           make install
           confirm "make install"
