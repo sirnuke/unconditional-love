@@ -394,7 +394,7 @@ mpg123_configure()
       ;;
   esac
   ./configure $platform --prefix=$OUT_DIR_ABSOLUTE --disable-static --enable-shared \
-    --with-audio=alsa,dummy,oss --with-optimization=3
+    --with-audio=alsa,pulse,dummy,oss --with-optimization=3
 }
 
 mpg123_install()
