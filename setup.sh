@@ -462,8 +462,9 @@ Usage: $APPNAME [options] [command..]
 Options:
  -h, --help                 Display this usage message
  -l, --library <library>    Library to use; Love2D, LuaJIT, LibSDL,
-                            OpenAL, DevIL, ModPlug, Vorbis, mpg123, gme,
-                            zlib, libpng, libjpeg, or all [$LIBRARY]
+                            OpenAL, DevIL, ModPlug, Vorbis, mpg123,
+                            gme, physfs zlib, libpng, libjpeg, or
+                            all [$LIBRARY]
  -j, --jobs <jobs>          Number of jobs to run at once while compiling.
  -p, --platform <platform>  Platform to target; 32 or 64 [$PLATFORM]
  -r, --remove <type>        Components to remove during a clean; archive,
