@@ -28,6 +28,7 @@ if [ ! -d $OUT_DIR ] ; then mkdir $OUT_DIR ; fi
 if [ ! -d $BIN_DIR ] ; then mkdir $BIN_DIR ; fi
 
 OUT_DIR_ABSOLUTE=`readlink -f $OUT_DIR`
+CHRPATH=$OUT_DIR_ABSOLUTE/bin/chrpath
 
 confirm()
 {
@@ -55,9 +56,9 @@ binaries()
     local path=$OUT_DIR/bin/$binary
     local out=$BIN_DIR/$binary
     cp $path $out
-    chrpath -l $out > /dev/null
+    $CHRPATH -l $out > /dev/null
     if [ "$?" -eq "0" ] ; then
-      chrpath -d $out > /dev/null
+      $CHRPATH -d $out > /dev/null
     fi
     strip -s $out
     chmod 755 $out
@@ -69,9 +70,9 @@ process()
   for file in $@ ; do
     chmod 644 $file
     confirm "chmod 644 $file"
-    chrpath -l $file > /dev/null
+    $CHRPATH -l $file > /dev/null
     if [ "$?" -eq "0" ] ; then
-      chrpath -d $file > /dev/null
+      $CHRPATH -d $file > /dev/null
       confirm "chrpath -d $file"
     fi
     strip -s $file
