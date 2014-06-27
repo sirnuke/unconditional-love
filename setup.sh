@@ -249,9 +249,9 @@ devil_set()
 
 devil_configure()
 {
-  export CFLAGS="-m$PLATFORM"
-  export CXXFLAGS="-m$PLATFORM"
-  export LDFLAGS="-m$PLATFORM"
+  export CFLAGS="-m$PLATFORM -I$OUT_DIR_ABSOLUTE/include"
+  export CXXFLAGS="-m$PLATFORM -I$OUT_DIR_ABSOLUTE/include"
+  export LDFLAGS="-m$PLATFORM -L$OUT_DIR_ABSOLUTE/lib"
   export PKG_CONFIG_PATH="$OUT_DIR_ABSOLUTE/lib/pkgconfig"
   case $PLATFORM in
     32) local platform="--enable-x86 --disable-x86_64" ;;
