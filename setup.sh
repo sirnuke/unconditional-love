@@ -587,26 +587,13 @@ if [ "$LIBRARY" == "all" ]; then
 fi
 
 for lib in $LIBRARY ; do
-  case ${lib,,} in
-    luajit) luajit_set ;;
-    libsdl) libsdl_set ;;
-    love2d) love2d_set ;;
-    openal) openal_set ;;
-    devil)  devil_set  ;;
-    modplug) modplug_set ;;
-    vorbis) vorbis_set ;;
-    physfs) physfs_set ;;
-    ogg) ogg_set ;;
-    mpg123) mpg123_set ;;
-    gme) gme_set ;;
-    zlib) zlib_set ;;
-    libjpeg) libjpeg_set ;;
-    libpng) libpng_set ;;
-    chrpath) chrpath_set ;;
-    *)
-      echo "$APPNAME: Unknown library $lib"
-      exit 1
-  esac
+  set="${LIBRARY}_set"
+  if [ `type -t $set`"" == 'function' ] ; then
+    $set
+  else
+    echo "$APPNAME: Unknown library $lib"
+    exit 1
+  fi
   LIB_CONFIGURE="${lib,,}_configure"
   LIB_BUILD="${lib,,}_build"
   LIB_INSTALL="${lib,,}_install"
