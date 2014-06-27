@@ -593,7 +593,7 @@ if [ "$LIBRARY" == "all" ]; then
 fi
 
 for lib in $LIBRARY ; do
-  set="${LIBRARY}_set"
+  set="${lib,,}_set"
   if [ `type -t $set`"" == 'function' ] ; then
     $set
   else
