@@ -7,14 +7,14 @@
 shopt -s nullglob
 
 APPNAME="setup.sh"
-LIBRARY="all"
+COMPONENT="all"
 PLATFORM="32"
 REMOVE="build"
 COMMANDS=""
 DEFAULT="build"
 JOBS=""
 ALL="download extract build"
-LIBRARIES="chrpath zlib libpng libjpeg luajit libsdl openal devil modplug ogg vorbis physfs mpg123 gme love2d"
+COMPONENTS="chrpath zlib libpng libjpeg luajit libsdl openal devil modplug ogg vorbis physfs mpg123 gme love2d"
 
 PATCHES_DIR=patches
 CACHE_DIR=.cache
@@ -486,10 +486,10 @@ Usage: $APPNAME [options] [command..]
 
 Options:
  -h, --help                 Display this usage message
- -l, --library <library>    Library to use; Love2D, LuaJIT, LibSDL,
-                            OpenAL, DevIL, ModPlug, Vorbis, mpg123,
-                            gme, physfs zlib, libpng, libjpeg, or
-                            all [$LIBRARY]
+ -c, --component <name>     Component to act upon; chrpath, zlib, libpng,
+                            libjpeg, luajit, libsdl, openal, devil,
+                            modplug, ogg, vorbis, physfs, mpg123, gme,
+                            loved, or all [default]
  -j, --jobs <jobs>          Number of jobs to run at once while compiling.
  -p, --platform <platform>  Platform to target; 32 or 64 [$PLATFORM]
  -r, --remove <type>        Components to remove during a clean; archive,
@@ -513,7 +513,7 @@ if [ $? -ne 4 ] ; then
   exit 1
 fi
 
-if ! options=$(getopt --options hl:p:r:j: --long help,library:,platform:,remove:,jobs: --name $APPNAME -- "$@") ; then
+if ! options=$(getopt --options hc:p:r:j: --long help,component:,platform:,remove:,jobs: --name $APPNAME -- "$@") ; then
   exit 1
 fi
 
@@ -524,8 +524,8 @@ while [[ $# > 0 ]] ; do
     -h|--help)
       print_help
       ;;
-    -l|--library)
-      LIBRARY="$2"
+    -c|--component)
+      COMPONENT="$2"
       shift
       ;;
     -p|--platform)
@@ -588,21 +588,21 @@ if [ -z "$COMMANDS" ] ; then
   COMMANDS="$DEFAULT"
 fi
 
-if [ "$LIBRARY" == "all" ]; then
-  LIBRARY="$LIBRARIES"
+if [ "$COMPONENT" == "all" ]; then
+  COMPONENT="$COMPONENTS"
 fi
 
-for lib in $LIBRARY ; do
-  set="${lib,,}_set"
+for c in $COMPONENT ; do
+  set="${c,,}_set"
   if [ `type -t $set`"" == 'function' ] ; then
     $set
   else
-    echo "$APPNAME: Unknown library $lib"
+    echo "$APPNAME: Unknown component $c"
     exit 1
   fi
-  LIB_CONFIGURE="${lib,,}_configure"
-  LIB_BUILD="${lib,,}_build"
-  LIB_INSTALL="${lib,,}_install"
+  LIB_CONFIGURE="${c,,}_configure"
+  LIB_BUILD="${c,,}_build"
+  LIB_INSTALL="${c,,}_install"
   for cmd in $COMMANDS ; do
     case $cmd in
       download)
