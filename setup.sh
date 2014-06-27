@@ -357,12 +357,11 @@ physfs_set()
 
 physfs_configure()
 {
-  export CFLAGS="-m$PLATFORM"
-  export CXXFLAGS="-m$PLATFORM"
-  export LDFLAGS="-m$PLATFORM"
   export PKG_CONFIG_PATH="$OUT_DIR_ABSOLUTE/lib/pkgconfig"
   cmake -DCMAKE_INSTALL_PREFIX=$OUT_DIR_ABSOLUTE -DPHYSFS_BUILD_STATIC=false \
-    -DPHYSFS_BUILD_TEST=false
+    -DPHYSFS_BUILD_TEST=false -DCMAKE_C_FLAGS="-m$PLATFORM -I$OUT_DIR_ABSOLUTE/include" \
+    -DCMAKE_CXX_FLAGS="-m$PLATFORM -I$OUT_DIR_ABSOLUTE/include" \
+    -DCMAKE_LD_FLAGS="-m$PLATFORM -L$OUT_DIR_ABSOLUTE/lib"
 }
 
 physfs_install()
