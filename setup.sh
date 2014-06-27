@@ -14,7 +14,7 @@ COMMANDS=""
 DEFAULT="build"
 JOBS=""
 ALL="download extract build"
-LIBRARIES="zlib libpng libjpeg luajit libsdl openal devil modplug ogg vorbis physfs mpg123 gme love2d"
+LIBRARIES="chrpath zlib libpng libjpeg luajit libsdl openal devil modplug ogg vorbis physfs mpg123 gme love2d"
 
 PATCHES_DIR=patches
 CACHE_DIR=.cache
@@ -77,6 +77,25 @@ process()
     strip -s $file
     confirm "strip -s $file"
   done
+}
+
+chrpath_set()
+{
+  LIB_NAME="chrpath"
+  LIB_VERSION="0.16"
+  LIB_DOWNLOAD="https://alioth.debian.org/frs/download.php/file/3979/chrpath-0.16.tar.gz"
+  LIB_ARCHIVE="chrpath-0.16.tar.gz"
+  LIB_DIRECTORY="chrpath-0.16/"
+}
+
+chrpath_configure()
+{
+  ./configure --prefix=$OUT_DIR_ABSOLUTE
+}
+
+chrpath_install()
+{
+  true
 }
 
 zlib_set()
@@ -583,6 +602,7 @@ for lib in $LIBRARY ; do
     zlib) zlib_set ;;
     libjpeg) libjpeg_set ;;
     libpng) libpng_set ;;
+    chrpath) chrpath_set ;;
     *)
       echo "$APPNAME: Unknown library $lib"
       exit 1
