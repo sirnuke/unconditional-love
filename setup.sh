@@ -419,11 +419,16 @@ mpg123_configure()
 mpg123_install()
 {
   libraries "libmpg123.so.0.40.3"
-  mkdir -p $BIN_DIR/mpg123
-  cp $OUT_DIR/lib/mpg123/*.so $BIN_DIR/mpg123
-  for output in `ls $BIN_DIR/mpg123/*.so` ; do
-    process $output
-  done
+  local t=`ls -l $OUT_DIR/lib/mpg123/*.so 2>/dev/null | wc -l`
+  if [ "$t" -eq "0" ] ; then
+    echo "$APPNAME: No mpg123 modules.  Is ltdl installed and setup?"
+  else
+    mkdir -p $BIN_DIR/mpg123
+    cp $OUT_DIR/lib/mpg123/*.so $BIN_DIR/mpg123
+    for output in `ls $BIN_DIR/mpg123/*.so` ; do
+      process $output
+    done
+  fi
 }
 
 gme_set()
